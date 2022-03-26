@@ -1,13 +1,13 @@
 #ifndef _OPENGLMATRIX_H_
 #define _OPENGLMATRIX_H_
 
-#include <glm/glm.hpp>
 #include <list>
 #include <string>
+#include <glm/glm.hpp>
 
 /*
   CSCI 420 Computer Graphics, University of Southern California
-  Jernej Barbic, Bohan Wang, 2020
+  Jernej Barbic, Bohan Wang, 2016
 
   Helper class for modelview and projection OpenGL matrix transformations.
   All matrices in this class are stored in the column-major format.

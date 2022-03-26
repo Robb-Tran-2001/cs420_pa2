@@ -1,8 +1,8 @@
-#include "pipelineProgram.h"
-
 #include <cstring>
 #include <cstdio>
 #include <iostream>
+
+#include "pipelineProgram.h"
 
 using namespace std;
 
@@ -20,15 +20,15 @@ int PipelineProgram::BuildShadersFromFiles(const char * filenameBasePath,
                                            const char * tessellationControlShaderFilename,
                                            const char * tessellationEvaluationShaderFilename)
 {
-  char * shaderCodes[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
+  char * shaderCodes[5] = { NULL, NULL, NULL, NULL, NULL };
   const char * filenames[5] = { vertexShaderFilename, fragmentShaderFilename, geometryShaderFilename, tessellationControlShaderFilename, tessellationEvaluationShaderFilename };
 
   for (int i = 0; i < 5; i++) 
   {
     // if filename not provided, skip that shader
-    if (filenames[i] == nullptr) 
+    if (filenames[i] == NULL) 
     {
-      shaderCodes[i] = nullptr;
+      shaderCodes[i] = NULL;
       continue;
     }
 
@@ -55,7 +55,7 @@ int PipelineProgram::BuildShadersFromFiles(const char * filenameBasePath,
   for (int i = 0; i < 5; i++) 
   {
     delete [] (shaderCodes[i]);
-    shaderCodes[i] = nullptr;
+    shaderCodes[i] = NULL;
   }
 
   return exitCode;
@@ -101,7 +101,7 @@ int PipelineProgram::BuildShadersFromStrings(const char * vertexShaderCode,
   for (int i = 0; i < 5; i++)
   {
     // if code is not provided, skip this shader
-    if (shaderCode[i] == nullptr)
+    if (shaderCode[i] == NULL)
       continue;
 
     cout << "compiling " << shaderName[i] << "..." << endl;
@@ -133,7 +133,7 @@ int PipelineProgram::BuildShadersFromStrings(const char * vertexShaderCode,
   if (status == 0)
   {
     GLchar infoLog[512];
-    glGetProgramInfoLog(programHandle, 512, nullptr, infoLog);
+    glGetProgramInfoLog(programHandle, 512, NULL, infoLog);
     cout << "Errors:\n" << infoLog << endl;
     return 1;
   }
@@ -161,7 +161,7 @@ void PipelineProgram::Bind()
 int PipelineProgram::LoadShader(const char * filename, char * code, int len)
 {
   FILE * file = fopen(filename, "rb");
-  if (file == nullptr)
+  if (file == NULL)
     return 1;
 
   code[fread(code, 1, len, file)] = '\0';
@@ -194,7 +194,7 @@ int PipelineProgram::CompileShader(const char * shaderCode, GLenum shaderType, G
   if (status == 0)
   {
     GLchar infoLog[512];
-    glGetShaderInfoLog(shaderHandle, 512, nullptr, infoLog);
+    glGetShaderInfoLog(shaderHandle, 512, NULL, infoLog);
     cout << infoLog << endl;
     return 1;
   }

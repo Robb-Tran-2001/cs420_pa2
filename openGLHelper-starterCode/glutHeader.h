@@ -3,7 +3,7 @@
 
 // headers of the GLUT library
 
-#if defined(WIN32) || defined(_WIN32) || defined(linux) || defined(__linux__)
+#if defined(WIN32) || defined(linux)
   #include <GL/glut.h>
   //#include <GL/freeglut_ext.h>
 #elif defined(__APPLE__)

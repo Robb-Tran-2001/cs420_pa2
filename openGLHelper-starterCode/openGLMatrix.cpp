@@ -1,14 +1,14 @@
-#include "openGLMatrix.h"
-
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <list>
 #include <string>
 #include <iomanip>
 #include <sstream>
 #include <cstring>
+
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "openGLMatrix.h"
 
 using namespace std;
 

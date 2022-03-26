@@ -1,0 +1,13 @@
+12
+splines/circle.sp
+splines/cs1.sp
+splines/goodRide.sp
+splines/leftturn.sp
+splines/rollerCoaster.sp
+splines/star.sp
+splines/straightLine.sp
+splines/upsidedown.sp
+splines/xaxis.sp
+splines/xyz.sp
+splines/yaxis.sp
+splines/zaxis.sp

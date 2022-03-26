@@ -5,7 +5,7 @@
 
 /*
   CSCI 420 Computer Graphics, University of Southern California
-  Jernej Barbic, Bohan Wang, 2020
+  Jernej Barbic, Bohan Wang, 2016
 
   Shader program helper class. 
   It loads shaders and properly initializes them in OpenGL.
@@ -35,7 +35,7 @@ public:
   virtual ~PipelineProgram();
 
   // Loads the shaders, compiles them, and links them into a pipeline program
-  // If a shader is not provided, the pointer should be set to nullptr on input.
+  // If a shader is not provided, the pointer should be set to NULL on input.
   // The provided shaders must come from one of the following choices:
   // (A), (B)
   // (A), (B), (C)
@@ -47,15 +47,15 @@ public:
   int BuildShadersFromFiles(const char * filenameBasePath,
                             const char * vertexShaderFilename,
                             const char * fragmentShaderFilename,
-                            const char * geometryShaderFilename = nullptr,
-                            const char * tessellationControlShaderFilename = nullptr,
-                            const char * tessellationEvaluationShaderFilename = nullptr);
+                            const char * geometryShaderFilename = NULL,
+                            const char * tessellationControlShaderFilename = NULL,
+                            const char * tessellationEvaluationShaderFilename = NULL);
   // load shaders from a C text string
   int BuildShadersFromStrings(const char * vertexShaderCode,
                               const char * fragmentShaderCode,
-                              const char * geometryShaderCode = nullptr,
-                              const char * tessellationControlShaderCode = nullptr,
-                              const char * tessellationEvaluationShaderCode = nullptr);
+                              const char * geometryShaderCode = NULL,
+                              const char * tessellationControlShaderCode = NULL,
+                              const char * tessellationEvaluationShaderCode = NULL);
 
   // binds (activates) all the provided shaders 
   void Bind();

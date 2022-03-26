@@ -82,7 +82,7 @@ ImageIO::ImageIO()
   width = 0;
   height = 0;
   bytesPerPixel = 0;
-  pixels = nullptr;
+  pixels = NULL;
   ownPixels = 0;
 }
 
@@ -167,7 +167,7 @@ ImageIO::errorType ImageIO::savePPM(const char * filename)
   if(!file)
     return IO_ERROR;
 
-  unsigned char * pixelsNoAlphaChannel = nullptr;
+  unsigned char * pixelsNoAlphaChannel = NULL;
   if (bytesPerPixel == 4) // special case, alpha channel byte will be dropped
   {
     printf("Warning in savePPM: Alpha channel has been dropped when the image is saved in PPM format.\n");
@@ -344,7 +344,7 @@ ImageIO::errorType ImageIO::saveTGA(const char * filename)
   WRITECHAR(0);                          // image descriptor
   
   unsigned char * pixelBuf = (unsigned char*) malloc (sizeof(unsigned char) * width * height * bytesPerPixel);
-  if (pixelBuf == nullptr)
+  if (pixelBuf == NULL)
   {
     printf("Error in saveTGA: cannot allocate memory for pixel buffer.\n");
     fclose(file);
@@ -404,7 +404,7 @@ ImageIO::errorType ImageIO::loadJPEG(const char * filename)
   free(pixels);
   pixels = (unsigned char *) malloc(sizeof(unsigned char) * width * height * bytesPerPixel);
 //  printf("Width = %d; Height = %d, bytesPerPixel = %d\n", width, height, bytesPerPixel);
-//  fflush(nullptr);
+//  fflush(NULL);
 
   JSAMPROW rowPtr[1];
   for(int row= jpgPicturePtr->output_height - 1; jpgPicturePtr->output_scanline < jpgPicturePtr->output_height; row--)
@@ -453,7 +453,7 @@ ImageIO::errorType ImageIO::saveJPEGWithGivenQuality(const char * filename, int 
   jpeg_create_compress(&jpgPicture);   // Init
   jpeg_stdio_dest(&jpgPicture, file);  // setup image destination
 
-  unsigned char * pixelsNoAlphaChannel = nullptr;
+  unsigned char * pixelsNoAlphaChannel = NULL;
   if (bytesPerPixel == 4) // special case, alpha channel byte will be dropped
   {
     printf("Warning in saveJPEG: Alpha channel has been dropped when the image is saved in JPEG format.\n");
@@ -636,7 +636,7 @@ ImageIO::errorType ImageIO::saveTIFF(const char * filename)
   }
   
   unsigned char * imageBuf = (unsigned char *)_TIFFmalloc(TIFFScanlineSize(tif));
-  if (imageBuf == nullptr)
+  if (imageBuf == NULL)
   {
     printf("Error in saveTIFF: cannot allocate memory for the storage of a row of pixels.\n");
     TIFFClose(tif);
@@ -696,7 +696,7 @@ ImageIO::errorType ImageIO::loadPNG(const char * filename)
   }
 
   // initialize png_struct and png_info
-  png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+  png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png_ptr)
   {
     printf("Error in loadPNG: Creating the internal structure failed.\n");
@@ -708,7 +708,7 @@ ImageIO::errorType ImageIO::loadPNG(const char * filename)
   if (!info_ptr)
   {
     png_destroy_read_struct(&png_ptr,
-      (png_infopp)nullptr, (png_infopp)nullptr);
+      (png_infopp)NULL, (png_infopp)NULL);
     printf("Error in loadPNG: Creating the information structure failed.\n");
     fclose(file);
     return (IO_ERROR);
@@ -716,7 +716,7 @@ ImageIO::errorType ImageIO::loadPNG(const char * filename)
 
   if (setjmp(png_jmpbuf(png_ptr)))
   {
-    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)nullptr);
+    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
     fclose(file);
     printf("Error in loadPNG: cannot setup the error handling.\n");
     return (IO_ERROR);
@@ -730,7 +730,7 @@ ImageIO::errorType ImageIO::loadPNG(const char * filename)
   int color_type;
   int bit_depth;
 
-  png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)(&width), (png_uint_32*)(&height), &bit_depth, &color_type, nullptr, nullptr, nullptr);
+  png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)(&width), (png_uint_32*)(&height), &bit_depth, &color_type, NULL, NULL, NULL);
 
   // !!ATTETNION!! The following transformations are designed in the order that they should occur.
   // DO NOT change the sequence!!
@@ -831,7 +831,7 @@ ImageIO::errorType ImageIO::loadPNG(const char * filename)
 
   png_read_image(png_ptr, row_pointers);
 
-  png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)nullptr);
+  png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
   free(row_pointers);
 
   fclose(file);
@@ -852,7 +852,7 @@ ImageIO::errorType ImageIO::savePNG(const char * filename)
     return IO_ERROR;
   }
 
-  png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+  png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
   if (!png_ptr)
   {
@@ -865,7 +865,7 @@ ImageIO::errorType ImageIO::savePNG(const char * filename)
   
   if (!info_ptr)
   {
-    png_destroy_write_struct(&png_ptr, (png_infopp)nullptr);
+    png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
     printf("Error in savePNG: Creating the information structure failed.\n");
     fclose(file);
     return (IO_ERROR);
@@ -938,7 +938,7 @@ ImageIO::errorType ImageIO::savePNG(const char * filename)
     return (IO_ERROR);
   }
 
-  png_write_end(png_ptr, nullptr);
+  png_write_end(png_ptr, NULL);
 
   png_destroy_write_struct(&png_ptr, &info_ptr);
   fclose(file);
