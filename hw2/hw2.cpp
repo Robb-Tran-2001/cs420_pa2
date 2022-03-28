@@ -3,7 +3,7 @@
   Assignment 2: Roller Coaster
   C++ starter code
 
-  Student username: rhiremat
+  Student username: bobtran
 */
 
 #include <iostream>
@@ -71,24 +71,12 @@ char windowTitle[512] = "CSCI 420 homework II";
 OpenGLMatrix * matrix;
 TexPipelineProgram * pipelineProgram;
 BasicPipelineProgram * basicPipelineProgram;
-GLuint buffer, skyBuffer, groundBuffer, crossBarBuffer;
-GLuint VAO, skyVAO, groundVAO, crossBarVAO;
+GLuint trackBuffer, skyBuffer, groundBuffer, crossbarBuffer;
+GLuint trackVAO, skyVAO, groundVAO, crossbarVAO;
 
-GLuint skyTexHandle;
-vector<float> skyPos;
-vector<float> skyUVs;
-
-GLuint groundTexHandle;
-vector<float> groundPos;
-vector<float> groundUVs;
-
-GLuint trackTexHandle;
-vector<float> pos;
-vector<float> uvs;
-
-GLuint crossBarTexHandle;
-vector<float> crossBarPos;
-vector<float> crossBarUVs;
+GLuint skyTexHandle, groundTexHandle, trackTexHandle, crossbarTexHandle;
+vector<float> skyPos, groundPos, crossbarPos, trackPos;
+vector<float> skyUVs, groundUVs, crossbarUVs, trackUVs;
 
 float FOV = 90.0;
 float eye[3] = {0, 0, 0};
@@ -153,7 +141,7 @@ void normalize(Point &v)
     }
 }
 
-// returns the corss product of the vectores passed as parameters
+// returns the cross product of the vectors passed as parameters
 void computeCrossProduct(Point a, Point b, Point &c)
 {
   c.x = a.y*b.z - b.y*a.z;
@@ -171,29 +159,29 @@ void computeNormal(Point tangent, Point &normal, Point &binormal)
   normalize(binormal);
 }
 
-// adds a triangle and its corresponding UV values to the vector variables pos and uvs - used to add track coordinates
+// adds a triangle and its corresponding UV values to the vector variables trackPos and trackUVs - used to add track coordinates
 void addTriangle(Point a, float au, float av, Point b, float bu, float bv, Point c, float cu, float cv)
 {
-  pos.push_back(a.x);
-  pos.push_back(a.y);
-  pos.push_back(a.z);
+  trackPos.push_back(a.x);
+  trackPos.push_back(a.y);
+  trackPos.push_back(a.z);
 
-  uvs.push_back(au);
-  uvs.push_back(av);
+  trackUVs.push_back(au);
+  trackUVs.push_back(av);
 
-  pos.push_back(b.x);
-  pos.push_back(b.y);
-  pos.push_back(b.z);
+  trackPos.push_back(b.x);
+  trackPos.push_back(b.y);
+  trackPos.push_back(b.z);
 
-  uvs.push_back(bu);
-  uvs.push_back(bv);
+  trackUVs.push_back(bu);
+  trackUVs.push_back(bv);
 
-  pos.push_back(c.x);
-  pos.push_back(c.y);
-  pos.push_back(c.z);
+  trackPos.push_back(c.x);
+  trackPos.push_back(c.y);
+  trackPos.push_back(c.z);
 
-  uvs.push_back(cu);
-  uvs.push_back(cv);
+  trackUVs.push_back(cu);
+  trackUVs.push_back(cv);
 }
 
 void setTextureUnit(GLint unit)
@@ -659,47 +647,47 @@ void initSplineCoordinates()
     cb2.y = v3.y + 0.01*tangentCoord[i].y;
     cb2.z = v3.z + 0.01*tangentCoord[i].z;
 
-    crossBarPos.push_back(cb2.x);
-    crossBarPos.push_back(cb2.y);
-    crossBarPos.push_back(cb2.z);
+    crossbarPos.push_back(cb2.x);
+    crossbarPos.push_back(cb2.y);
+    crossbarPos.push_back(cb2.z);
 
-    crossBarUVs.push_back(0);
-    crossBarUVs.push_back(1);
+    crossbarUVs.push_back(0);
+    crossbarUVs.push_back(1);
 
-    crossBarPos.push_back(cb1.x);
-    crossBarPos.push_back(cb1.y);
-    crossBarPos.push_back(cb1.z);
+    crossbarPos.push_back(cb1.x);
+    crossbarPos.push_back(cb1.y);
+    crossbarPos.push_back(cb1.z);
 
-    crossBarUVs.push_back(1);
-    crossBarUVs.push_back(1);
+    crossbarUVs.push_back(1);
+    crossbarUVs.push_back(1);
 
-    crossBarPos.push_back(cb0.x);
-    crossBarPos.push_back(cb0.y);
-    crossBarPos.push_back(cb0.z);
+    crossbarPos.push_back(cb0.x);
+    crossbarPos.push_back(cb0.y);
+    crossbarPos.push_back(cb0.z);
 
-    crossBarUVs.push_back(1);
-    crossBarUVs.push_back(0);
+    crossbarUVs.push_back(1);
+    crossbarUVs.push_back(0);
 
-    crossBarPos.push_back(cb2.x);
-    crossBarPos.push_back(cb2.y);
-    crossBarPos.push_back(cb2.z);
+    crossbarPos.push_back(cb2.x);
+    crossbarPos.push_back(cb2.y);
+    crossbarPos.push_back(cb2.z);
 
-    crossBarUVs.push_back(0);
-    crossBarUVs.push_back(1);
+    crossbarUVs.push_back(0);
+    crossbarUVs.push_back(1);
 
-    crossBarPos.push_back(cb3.x);
-    crossBarPos.push_back(cb3.y);
-    crossBarPos.push_back(cb3.z);
+    crossbarPos.push_back(cb3.x);
+    crossbarPos.push_back(cb3.y);
+    crossbarPos.push_back(cb3.z);
 
-    crossBarUVs.push_back(0);
-    crossBarUVs.push_back(0);
+    crossbarUVs.push_back(0);
+    crossbarUVs.push_back(0);
 
-    crossBarPos.push_back(cb0.x);
-    crossBarPos.push_back(cb0.y);
-    crossBarPos.push_back(cb0.z);
+    crossbarPos.push_back(cb0.x);
+    crossbarPos.push_back(cb0.y);
+    crossbarPos.push_back(cb0.z);
 
-    crossBarUVs.push_back(1);
-    crossBarUVs.push_back(0);
+    crossbarUVs.push_back(1);
+    crossbarUVs.push_back(0);
 
     b0 = b1;
 
@@ -715,13 +703,13 @@ void initBuffer()
 
 void initVBOs()
 {
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, (pos.size() + uvs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
+  glGenBuffers(1, &trackBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, trackBuffer);
+  glBufferData(GL_ARRAY_BUFFER, (trackPos.size() + trackUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
   // upload position data
-  glBufferSubData(GL_ARRAY_BUFFER, 0, pos.size() * sizeof(float), pos.data());
+  glBufferSubData(GL_ARRAY_BUFFER, 0, trackPos.size() * sizeof(float), trackPos.data());
   // upload uv data
-  glBufferSubData(GL_ARRAY_BUFFER, pos.size() * sizeof(float), uvs.size() * sizeof(float), uvs.data());
+  glBufferSubData(GL_ARRAY_BUFFER, trackPos.size() * sizeof(float), trackUVs.size() * sizeof(float), trackUVs.data());
 
   glGenBuffers(1, &groundBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, groundBuffer);
@@ -739,13 +727,13 @@ void initVBOs()
   // upload uv data
   glBufferSubData(GL_ARRAY_BUFFER, skyPos.size() * sizeof(float), skyUVs.size() * sizeof(float), skyUVs.data());
 
-  glGenBuffers(1, &crossBarBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, crossBarBuffer);
-  glBufferData(GL_ARRAY_BUFFER, (crossBarPos.size() + crossBarUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
+  glGenBuffers(1, &crossbarBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, crossbarBuffer);
+  glBufferData(GL_ARRAY_BUFFER, (crossbarPos.size() + crossbarUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
   // upload position data
-  glBufferSubData(GL_ARRAY_BUFFER, 0, crossBarPos.size() * sizeof(float), crossBarPos.data());
+  glBufferSubData(GL_ARRAY_BUFFER, 0, crossbarPos.size() * sizeof(float), crossbarPos.data());
   // upload uv data
-  glBufferSubData(GL_ARRAY_BUFFER, crossBarPos.size() * sizeof(float), crossBarUVs.size() * sizeof(float), crossBarUVs.data());
+  glBufferSubData(GL_ARRAY_BUFFER, crossbarPos.size() * sizeof(float), crossbarUVs.size() * sizeof(float), crossbarUVs.data());
 
 }
 
@@ -771,7 +759,6 @@ void setCameraAttributes(int i)
 void displayGround()
 {
   glGenVertexArrays(1, &groundVAO);
-
   setTextureUnit(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, groundTexHandle);
 
@@ -780,20 +767,15 @@ void displayGround()
   glBindBuffer(GL_ARRAY_BUFFER, groundBuffer);
   GLuint loc = glGetAttribLocation(program, "position");
   glEnableVertexAttribArray(loc);
-  const void * offset = (const void*) 0;
-  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, offset);
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
 
   GLuint loc2 = glGetAttribLocation(program, "texCoord");
   glEnableVertexAttribArray(loc2);
-  const void * offset2 = (const void*) (size_t)(groundPos.size()*sizeof(float));
-  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, offset2);
+  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(groundPos.size()*sizeof(float)));
   glBindVertexArray(0);
 
   glBindVertexArray(groundVAO);
-  GLint first = 0;
-  GLsizei numberOfVertices = (groundPos.size()/3);
-  glDrawArrays(GL_TRIANGLES, first, numberOfVertices);
-
+  glDrawArrays(GL_TRIANGLES, 0, groundPos.size()/3);
   glBindVertexArray(0);
 }
 
@@ -801,7 +783,6 @@ void displayGround()
 void displaySky()
 {
   glGenVertexArrays(1, &skyVAO);
-
   setTextureUnit(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, skyTexHandle);
 
@@ -810,75 +791,62 @@ void displaySky()
   glBindBuffer(GL_ARRAY_BUFFER, skyBuffer);
   GLuint loc = glGetAttribLocation(program, "position");
   glEnableVertexAttribArray(loc);
-  const void * offset = (const void*) 0;
-  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, offset);
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
 
   GLuint loc2 = glGetAttribLocation(program, "texCoord");
   glEnableVertexAttribArray(loc2);
-  const void * offset2 = (const void*) (size_t)(skyPos.size()*sizeof(float));
-  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, offset2);
+  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(skyPos.size()*sizeof(float)));
   glBindVertexArray(0);
 
   glBindVertexArray(skyVAO);
-  GLint first = 0;
-  GLsizei numberOfVertices = (skyPos.size()/3);
-  glDrawArrays(GL_TRIANGLES, first, numberOfVertices);
-
+  glDrawArrays(GL_TRIANGLES, 0, skyPos.size()/3);
   glBindVertexArray(0);
 }
 
 // displays the track and crossbars
 void displayTrack()
 {
-  glGenVertexArrays(1, &VAO);
-
+  // track
+  glGenVertexArrays(1, &trackVAO);
   setTextureUnit(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, trackTexHandle);
 
   GLuint program = pipelineProgram->GetProgramHandle();
-  glBindVertexArray(VAO);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  glBindVertexArray(trackVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, trackBuffer);
   GLuint loc = glGetAttribLocation(program, "position");
   glEnableVertexAttribArray(loc);
-  const void * offset = (const void*) 0;
-  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, offset);
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
 
   GLuint loc2 = glGetAttribLocation(program, "texCoord");
   glEnableVertexAttribArray(loc2);
-  const void * offset2 = (const void*) (size_t)(pos.size()*sizeof(float));
-  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, offset2);
+  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(trackPos.size()*sizeof(float)));
   glBindVertexArray(0);
 
-  glBindVertexArray(VAO);
-  GLint first = 0;
-  GLsizei numberOfVertices = (pos.size()/3);
-  glDrawArrays(GL_TRIANGLES, first, numberOfVertices);
+  glBindVertexArray(trackVAO);
+  glDrawArrays(GL_TRIANGLES, 0, trackPos.size()/3);
   glBindVertexArray(0);
 
-  glGenVertexArrays(1, &crossBarVAO);
+  // crossbar
+  glGenVertexArrays(1, &crossbarVAO);
   setTextureUnit(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, crossBarTexHandle);
+  glBindTexture(GL_TEXTURE_2D, crossbarTexHandle);
 
-   program = pipelineProgram->GetProgramHandle();
-  glBindVertexArray(crossBarVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, crossBarBuffer);
+  program = pipelineProgram->GetProgramHandle();
+  glBindVertexArray(crossbarVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, crossbarBuffer);
   GLuint loc3 = glGetAttribLocation(program, "position");
   glEnableVertexAttribArray(loc3);
-  const void * offset3 = (const void*) 0;
-  glVertexAttribPointer(loc3, 3, GL_FLOAT, GL_FALSE, 0, offset3);
+  glVertexAttribPointer(loc3, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
 
   GLuint loc4 = glGetAttribLocation(program, "texCoord");
   glEnableVertexAttribArray(loc4);
-  const void * offset4 = (const void*) (size_t)(crossBarPos.size()*sizeof(float));
-  glVertexAttribPointer(loc4, 2, GL_FLOAT, GL_FALSE, 0, offset4);
+  glVertexAttribPointer(loc4, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(crossbarPos.size()*sizeof(float)));
   glBindVertexArray(0);
 
-  glBindVertexArray(crossBarVAO);
-   first = 0;
-   numberOfVertices = (crossBarPos.size()/3);
-  glDrawArrays(GL_TRIANGLES, first, numberOfVertices);
+  glBindVertexArray(crossbarVAO);
+  glDrawArrays(GL_TRIANGLES, 0, crossbarPos.size()/3);
   glBindVertexArray(0);
-
 }
 
 void display()
@@ -1015,42 +983,32 @@ int initTexture(const char * imageFilename, GLuint textureHandle)
   return 0;
 }
 
+void loadTexture(GLuint& texHandle, const char* filename) {
+  glGenTextures(1, &texHandle);
+  int code = initTexture(filename, texHandle);
+  if (code != 0)
+  {
+    printf("Error loading the %s texture image.\n", filename);
+    exit(EXIT_FAILURE);
+  }
+}
+
 void initScene(int argc, char *argv[])
 {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glEnable (GL_DEPTH_TEST);
 
-  glGenTextures(1, &skyTexHandle);
-  int code = initTexture("sky.jpg", skyTexHandle);
-  if (code != 0)
-  {
-    printf("Error loading the sky texture image.\n");
-    exit(EXIT_FAILURE);
-  }
+  string filename = "sky.jpg";
+  loadTexture(skyTexHandle, filename.c_str());
 
-  glGenTextures(1, &groundTexHandle);
-  code = initTexture("ground.jpg", groundTexHandle);
-  if (code != 0)
-  {
-    printf("Error loading the ground texture image.\n");
-    exit(EXIT_FAILURE);
-  }
+  filename = "ground.jpg";
+  loadTexture(groundTexHandle, filename.c_str());
 
-  glGenTextures(1, &trackTexHandle);
-  code = initTexture("track.jpg", trackTexHandle);
-  if (code != 0)
-  {
-    printf("Error loading the ground texture image.\n");
-    exit(EXIT_FAILURE);
-  }
+  filename = "track.jpg";
+  loadTexture(trackTexHandle, filename.c_str());
 
-  glGenTextures(1, &crossBarTexHandle);
-  code = initTexture("crossBar.jpg", crossBarTexHandle);
-  if (code != 0)
-  {
-    printf("Error loading the ground texture image.\n");
-    exit(EXIT_FAILURE);
-  }
+  filename = "crossbar.jpg";
+  loadTexture(crossbarTexHandle, filename.c_str());
 
   pipelineProgram = new TexPipelineProgram();
   pipelineProgram->Init("../openGLHelper-starterCode");
@@ -1253,17 +1211,6 @@ void mouseButtonFunc(int button, int state, int x, int y)
       rightMouseButton = (state == GLUT_DOWN);
     break;
   }
-  // switch (glutGetModifiers())
-  // {
-  //   case GLUT_ACTIVE_SHIFT:
-  //     controlState = TRANSLATE;
-  //   break;
-  //
-  //   // if CTRL and SHIFT are not pressed, we are in rotate mode
-  //   // default:
-  //   //   controlState = ROTATE;
-  //   // break;
-  // }
 
   // store the new mouse position
   mousePos[0] = x;
@@ -1285,29 +1232,7 @@ void keyboardFunc(unsigned char key, int x, int y)
     case 'x':
       // take a screenshot
       saveScreenshot("screenshot.jpg");
-    break;
-
-    // case 't':
-    //   controlState = TRANSLATE;
-    //   // store the new mouse position
-    //   mousePos[0] = x;
-    //   mousePos[1] = y;
-    // break;
-    //
-    // case 's':
-    //   controlState = SCALE;
-    //   // store the new mouse position
-    //   mousePos[0] = x;
-    //   mousePos[1] = y;
-    // break;
-    //
-    // case 'r':
-    //   controlState = ROTATE;
-    //   // store the new mouse position
-    //   mousePos[0] = x;
-    //   mousePos[1] = y;
-    // break;
-
+      break;
   }
 }
 
