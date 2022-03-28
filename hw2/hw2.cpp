@@ -701,40 +701,14 @@ void initBuffer()
   initSplineCoordinates();
 }
 
-void initVBOs()
-{
-  glGenBuffers(1, &trackBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, trackBuffer);
-  glBufferData(GL_ARRAY_BUFFER, (trackPos.size() + trackUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
+void initVBO(GLuint& vbo, vector<float>& pos, vector<float>& uvs) {
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, (pos.size() + uvs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
   // upload position data
-  glBufferSubData(GL_ARRAY_BUFFER, 0, trackPos.size() * sizeof(float), trackPos.data());
+  glBufferSubData(GL_ARRAY_BUFFER, 0, pos.size() * sizeof(float), pos.data());
   // upload uv data
-  glBufferSubData(GL_ARRAY_BUFFER, trackPos.size() * sizeof(float), trackUVs.size() * sizeof(float), trackUVs.data());
-
-  glGenBuffers(1, &groundBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, groundBuffer);
-  glBufferData(GL_ARRAY_BUFFER, (groundPos.size() + groundUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
-  // upload position data
-  glBufferSubData(GL_ARRAY_BUFFER, 0, groundPos.size() * sizeof(float), groundPos.data());
-  // upload uv data
-  glBufferSubData(GL_ARRAY_BUFFER, groundPos.size() * sizeof(float), groundUVs.size() * sizeof(float), groundUVs.data());
-
-  glGenBuffers(1, &skyBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, skyBuffer);
-  glBufferData(GL_ARRAY_BUFFER, (skyPos.size() + skyUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
-  // upload position data
-  glBufferSubData(GL_ARRAY_BUFFER, 0, skyPos.size() * sizeof(float), skyPos.data());
-  // upload uv data
-  glBufferSubData(GL_ARRAY_BUFFER, skyPos.size() * sizeof(float), skyUVs.size() * sizeof(float), skyUVs.data());
-
-  glGenBuffers(1, &crossbarBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, crossbarBuffer);
-  glBufferData(GL_ARRAY_BUFFER, (crossbarPos.size() + crossbarUVs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
-  // upload position data
-  glBufferSubData(GL_ARRAY_BUFFER, 0, crossbarPos.size() * sizeof(float), crossbarPos.data());
-  // upload uv data
-  glBufferSubData(GL_ARRAY_BUFFER, crossbarPos.size() * sizeof(float), crossbarUVs.size() * sizeof(float), crossbarUVs.data());
-
+  glBufferSubData(GL_ARRAY_BUFFER, pos.size() * sizeof(float), uvs.size() * sizeof(float), uvs.data());
 }
 
 // sets the camera attributes eye, focus and up
@@ -755,97 +729,21 @@ void setCameraAttributes(int i)
   up[2] = normal.z;
 }
 
-// displays the ground
-void displayGround()
-{
-  glGenVertexArrays(1, &groundVAO);
+void initVAO(GLuint& vao, GLuint& texHandle, GLuint& vbo, vector<float>& pos) {
+  glGenVertexArrays(1, &vao);
   setTextureUnit(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, groundTexHandle);
+  glBindTexture(GL_TEXTURE_2D, texHandle);
 
   GLuint program = pipelineProgram->GetProgramHandle();
-  glBindVertexArray(groundVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, groundBuffer);
+  glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
   GLuint loc = glGetAttribLocation(program, "position");
   glEnableVertexAttribArray(loc);
   glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
 
   GLuint loc2 = glGetAttribLocation(program, "texCoord");
   glEnableVertexAttribArray(loc2);
-  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(groundPos.size()*sizeof(float)));
-  glBindVertexArray(0);
-
-  glBindVertexArray(groundVAO);
-  glDrawArrays(GL_TRIANGLES, 0, groundPos.size()/3);
-  glBindVertexArray(0);
-}
-
-// displays the sky
-void displaySky()
-{
-  glGenVertexArrays(1, &skyVAO);
-  setTextureUnit(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, skyTexHandle);
-
-  GLuint program = pipelineProgram->GetProgramHandle();
-  glBindVertexArray(skyVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, skyBuffer);
-  GLuint loc = glGetAttribLocation(program, "position");
-  glEnableVertexAttribArray(loc);
-  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
-
-  GLuint loc2 = glGetAttribLocation(program, "texCoord");
-  glEnableVertexAttribArray(loc2);
-  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(skyPos.size()*sizeof(float)));
-  glBindVertexArray(0);
-
-  glBindVertexArray(skyVAO);
-  glDrawArrays(GL_TRIANGLES, 0, skyPos.size()/3);
-  glBindVertexArray(0);
-}
-
-// displays the track and crossbars
-void displayTrack()
-{
-  // track
-  glGenVertexArrays(1, &trackVAO);
-  setTextureUnit(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, trackTexHandle);
-
-  GLuint program = pipelineProgram->GetProgramHandle();
-  glBindVertexArray(trackVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, trackBuffer);
-  GLuint loc = glGetAttribLocation(program, "position");
-  glEnableVertexAttribArray(loc);
-  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
-
-  GLuint loc2 = glGetAttribLocation(program, "texCoord");
-  glEnableVertexAttribArray(loc2);
-  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(trackPos.size()*sizeof(float)));
-  glBindVertexArray(0);
-
-  glBindVertexArray(trackVAO);
-  glDrawArrays(GL_TRIANGLES, 0, trackPos.size()/3);
-  glBindVertexArray(0);
-
-  // crossbar
-  glGenVertexArrays(1, &crossbarVAO);
-  setTextureUnit(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, crossbarTexHandle);
-
-  program = pipelineProgram->GetProgramHandle();
-  glBindVertexArray(crossbarVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, crossbarBuffer);
-  GLuint loc3 = glGetAttribLocation(program, "position");
-  glEnableVertexAttribArray(loc3);
-  glVertexAttribPointer(loc3, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
-
-  GLuint loc4 = glGetAttribLocation(program, "texCoord");
-  glEnableVertexAttribArray(loc4);
-  glVertexAttribPointer(loc4, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(crossbarPos.size()*sizeof(float)));
-  glBindVertexArray(0);
-
-  glBindVertexArray(crossbarVAO);
-  glDrawArrays(GL_TRIANGLES, 0, crossbarPos.size()/3);
+  glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(pos.size()*sizeof(float)));
   glBindVertexArray(0);
 }
 
@@ -899,9 +797,25 @@ void display()
   pipelineProgram->Bind();
   glUniformMatrix4fv(h_modelViewMatrix, 1, GL_FALSE, m);
 
-  displayGround();
-  displaySky();
-  displayTrack();
+  initVAO(groundVAO, groundTexHandle, groundBuffer, groundPos);
+  glBindVertexArray(groundVAO);
+  glDrawArrays(GL_TRIANGLES, 0, groundPos.size()/3);
+  glBindVertexArray(0);
+
+  initVAO(skyVAO, skyTexHandle, skyBuffer, skyPos);
+  glBindVertexArray(skyVAO);
+  glDrawArrays(GL_TRIANGLES, 0, skyPos.size()/3);
+  glBindVertexArray(0);
+
+  initVAO(trackVAO, trackTexHandle, trackBuffer, trackPos);
+  glBindVertexArray(trackVAO);
+  glDrawArrays(GL_TRIANGLES, 0, trackPos.size()/3);
+  glBindVertexArray(0);
+
+  initVAO(crossbarVAO, crossbarTexHandle, crossbarBuffer, crossbarPos);
+  glBindVertexArray(crossbarVAO);
+  glDrawArrays(GL_TRIANGLES, 0, crossbarPos.size()/3);
+  glBindVertexArray(0);
 
   glutSwapBuffers();
 }
@@ -1016,7 +930,11 @@ void initScene(int argc, char *argv[])
   basicPipelineProgram->Init("../openGLHelper-starterCode");
   matrix = new OpenGLMatrix();
   initBuffer();
-  initVBOs();
+
+  initVBO(trackBuffer, trackPos, trackUVs);
+  initVBO(groundBuffer, groundPos, groundUVs);
+  initVBO(skyBuffer, skyPos, skyUVs);
+  initVBO(crossbarBuffer, crossbarPos, crossbarUVs);
 
   Point v;
   v.x = 0.0000000001;
