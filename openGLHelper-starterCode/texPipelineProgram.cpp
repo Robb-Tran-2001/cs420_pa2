@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <cstring>
 #include "openGLHeader.h"
-#include "TexPipelineProgram.h"
+#include "texPipelineProgram.h"
 using namespace std;
 
 int TexPipelineProgram::Init(const char * shaderBasePath)

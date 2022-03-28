@@ -144,9 +144,9 @@ void normalize(Point &v)
 // returns the cross product of the vectors passed as parameters
 void computeCrossProduct(Point a, Point b, Point &c)
 {
-  c.x = a.y*b.z - b.y*a.z;
-  c.y = a.z*b.x - b.z*a.x;
-  c.z = a.x*b.y - b.x*a.y;
+  c.x = a.y * b.z - a.z * b.y;
+  c.y = a.z * b.x - a.x * b.z;
+  c.z = a.x * b.y - a.y * b.x;
 }
 
 // computes the normal and binormal given the tangent at a point
@@ -481,171 +481,170 @@ void initSplineCoordinates()
   }
 
   //calculate the coordinates for the rails
-  Point v0,v1,v2,v3,v4,v5,v6,v7,v;
-  Point n0,n1,b0,b1;
-  float alpha = 0.002; //ratio of the normal
-  float alpha2 = 0.02; //ratio of the binormal
+  Point v0_right, v1_right, v2_right, v3_right, v4_right, v5_right, v6_right, v7_right, v_initial;
+  Point n0, n1, b0, b1;
+  float alpha = 0.008; //ratio of the normal and binormal
   float beta = 0.01;
   int cb=0;
 
-  v.x = 0.00000000000001;
-  v.y = 1;
-  v.z = 0.00000000000001;
+  v_initial.x = 0.00000000000001;
+  v_initial.y = 1;
+  v_initial.z = 0.00000000000001;
 
-  computeCrossProduct(tangentCoord[0], v, n0);
+  computeCrossProduct(tangentCoord[0], v_initial, n0);
   normalize(n0);
 
   computeCrossProduct(tangentCoord[0], n0, b0);
   normalize(b0);
 
-  Point V0,V1,V2,V3,V4,V5,V6,V7;
-  Point cb0,cb1,cb2,cb3;
+  Point v0_left, v1_left, v2_left, v3_left, v4_left, v5_left, v6_left, v7_left;
+  Point cb0, cb1, cb2, cb3;
 
-  for (int i=1; i<splineCoord.size(); i+=10)
+  for (int i=1; i<splineCoord.size(); i+=15)
   {
     if (i!=0)
     {
       computeNormal(tangentCoord[i], n0, b0);
     }
 
-    v0.x = splineCoord[i].x + alpha * (-n0.x) + alpha2* (b0.x);
-    v0.y = splineCoord[i].y + alpha * (-n0.y) + alpha2* (b0.y);
-    v0.z = splineCoord[i].z + alpha * (-n0.z) + alpha2* (b0.z);
+    v0_right.x = splineCoord[i].x + alpha * ((-n0.x) + (b0.x));
+    v0_right.y = splineCoord[i].y + alpha * ((-n0.y) + (b0.y));
+    v0_right.z = splineCoord[i].z + alpha * ((-n0.z) + (b0.z));
 
-    v1.x = splineCoord[i].x + alpha * (n0.x) + alpha2* (b0.x);
-    v1.y = splineCoord[i].y + alpha * (n0.y) + alpha2* (b0.y);
-    v1.z = splineCoord[i].z + alpha * (n0.z) + alpha2* (b0.z);
+    v1_right.x = splineCoord[i].x + alpha * ((n0.x) + (b0.x));
+    v1_right.y = splineCoord[i].y + alpha * ((n0.y) + (b0.y));
+    v1_right.z = splineCoord[i].z + alpha * ((n0.z) + (b0.z));
 
-    v2.x = splineCoord[i].x + alpha * (n0.x) - alpha2* (b0.x);
-    v2.y = splineCoord[i].y + alpha * (n0.y) - alpha2* (b0.y);
-    v2.z = splineCoord[i].z + alpha * (n0.z) - alpha2* (b0.z);
+    v2_right.x = splineCoord[i].x + alpha * ((n0.x) - (b0.x));
+    v2_right.y = splineCoord[i].y + alpha * ((n0.y) - (b0.y));
+    v2_right.z = splineCoord[i].z + alpha * ((n0.z) - (b0.z));
 
-    v3.x = splineCoord[i].x + alpha * (-n0.x) - alpha2* (b0.x);
-    v3.y = splineCoord[i].y + alpha * (-n0.y) - alpha2* (b0.y);
-    v3.z = splineCoord[i].z + alpha * (-n0.z) - alpha2* (b0.z);
+    v3_right.x = splineCoord[i].x + alpha * ((-n0.x) - (b0.x));
+    v3_right.y = splineCoord[i].y + alpha * ((-n0.y) - (b0.y));
+    v3_right.z = splineCoord[i].z + alpha * ((-n0.z) - (b0.z));
 
     b1 = b0;
-    computeNormal(tangentCoord[i+10], n1, b1);
+    computeNormal(tangentCoord[i+15], n1, b1);
 
-    v4.x = splineCoord[i+10].x + alpha * (-n1.x) + alpha2* (b1.x);
-    v4.y = splineCoord[i+10].y + alpha * (-n1.y) + alpha2* (b1.y);
-    v4.z = splineCoord[i+10].z + alpha * (-n1.z) + alpha2* (b1.z);
+    v4_right.x = splineCoord[i+15].x + alpha * ((-n1.x) + (b1.x));
+    v4_right.y = splineCoord[i+15].y + alpha * ((-n1.y) + (b1.y));
+    v4_right.z = splineCoord[i+15].z + alpha * ((-n1.z) + (b1.z));
 
-    v5.x = splineCoord[i+10].x + alpha * (n1.x) + alpha2* (b1.x);
-    v5.y = splineCoord[i+10].y + alpha * (n1.y) + alpha2* (b1.y);
-    v5.z = splineCoord[i+10].z + alpha * (n1.z) + alpha2* (b1.z);
+    v5_right.x = splineCoord[i+15].x + alpha * ((n1.x) + (b1.x));
+    v5_right.y = splineCoord[i+15].y + alpha * ((n1.y) + (b1.y));
+    v5_right.z = splineCoord[i+15].z + alpha * ((n1.z) + (b1.z));
 
-    v6.x = splineCoord[i+10].x + alpha * (n1.x) - alpha2* (b1.x);
-    v6.y = splineCoord[i+10].y + alpha * (n1.y) - alpha2* (b1.y);
-    v6.z = splineCoord[i+10].z + alpha * (n1.z) - alpha2* (b1.z);
+    v6_right.x = splineCoord[i+15].x + alpha * ((n1.x) - (b1.x));
+    v6_right.y = splineCoord[i+15].y + alpha * ((n1.y) - (b1.y));
+    v6_right.z = splineCoord[i+15].z + alpha * ((n1.z) -  (b1.z));
 
-    v7.x = splineCoord[i+10].x + alpha * (-n1.x) - alpha2* (b1.x);
-    v7.y = splineCoord[i+10].y + alpha * (-n1.y) - alpha2* (b1.y);
-    v7.z = splineCoord[i+10].z + alpha * (-n1.z) - alpha2* (b1.z);
+    v7_right.x = splineCoord[i+15].x + alpha * ((-n1.x) - (b1.x));
+    v7_right.y = splineCoord[i+15].y + alpha * ((-n1.y) - (b1.y));
+    v7_right.z = splineCoord[i+15].z + alpha * ((-n1.z) - (b1.z));
 
     //left rail
-    V0.x = v3.x;
-    V0.y = v3.y;
-    V0.z = v3.z;
+    v0_left.x = v3_right.x;
+    v0_left.y = v3_right.y;
+    v0_left.z = v3_right.z;
 
-    V1.x = v2.x;
-    V1.y = v2.y;
-    V1.z = v2.z;
+    v1_left.x = v2_right.x;
+    v1_left.y = v2_right.y;
+    v1_left.z = v2_right.z;
 
-    V2.x = v2.x - beta*b0.x;
-    V2.y = v2.y - beta*b0.y;
-    V2.z = v2.z - beta*b0.z;
+    v2_left.x = v2_right.x - beta*b0.x;
+    v2_left.y = v2_right.y - beta*b0.y;
+    v2_left.z = v2_right.z - beta*b0.z;
 
-    V3.x = v3.x - beta*b0.x;
-    V3.y = v3.y - beta*b0.y;
-    V3.z = v3.z - beta*b0.z;
+    v3_left.x = v3_right.x - beta*b0.x;
+    v3_left.y = v3_right.y - beta*b0.y;
+    v3_left.z = v3_right.z - beta*b0.z;
 
-    V4.x = v7.x;
-    V4.y = v7.y;
-    V4.z = v7.z;
+    v4_left.x = v7_right.x;
+    v4_left.y = v7_right.y;
+    v4_left.z = v7_right.z;
 
-    V5.x = v6.x;
-    V5.y = v6.y;
-    V5.z = v6.z;
+    v5_left.x = v6_right.x;
+    v5_left.y = v6_right.y;
+    v5_left.z = v6_right.z;
 
-    V6.x = v6.x - beta*b1.x;
-    V6.y = v6.y - beta*b1.y;
-    V6.z = v6.z - beta*b1.z;
+    v6_left.x = v6_right.x - beta*b1.x;
+    v6_left.y = v6_right.y - beta*b1.y;
+    v6_left.z = v6_right.z - beta*b1.z;
 
-    V7.x = v7.x - beta*b1.x;
-    V7.y = v7.y - beta*b1.y;
-    V7.z = v7.z - beta*b1.z;
+    v7_left.x = v7_right.x - beta*b1.x;
+    v7_left.y = v7_right.y - beta*b1.y;
+    v7_left.z = v7_right.z - beta*b1.z;
 
     //right
-    addTriangle(V6, 0, 1, V2, 0, 0, V1, 1, 0);
-    addTriangle(V6, 0, 1, V5, 1, 1, V1, 1, 0);
+    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v1_left, 1, 0);
+    addTriangle(v6_left, 0, 1, v5_left, 1, 1, v1_left, 1, 0);
     //top
-    addTriangle(V5, 0, 1, V1, 0, 0, V0, 1, 0);
-    addTriangle(V5, 0, 1, V4, 1, 1, V0, 1, 0);
+    addTriangle(v5_left, 0, 1, v1_left, 0, 0, v0_left, 1, 0);
+    addTriangle(v5_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
     //left
-    addTriangle(V7, 0, 1, V3, 0, 0, V0, 1, 0);
-    addTriangle(V7, 0, 1, V4, 1, 1, V0, 1, 0);
+    addTriangle(v7_left, 0, 1, v3_left, 0, 0, v0_left, 1, 0);
+    addTriangle(v7_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
     //bottom
-    addTriangle(V6, 0, 1, V2, 0, 0, V3, 1, 0);
-    addTriangle(V6, 0, 1, V7, 1, 1, V3, 1, 0);
+    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v3_left, 1, 0);
+    addTriangle(v6_left, 0, 1, v7_left, 1, 1, v3_left, 1, 0);
 
     //right rail
-    V0.x = v0.x + beta*b0.x;
-    V0.y = v0.y + beta*b0.y;
-    V0.z = v0.z + beta*b0.z;
+    v0_left.x = v0_right.x + beta*b0.x;
+    v0_left.y = v0_right.y + beta*b0.y;
+    v0_left.z = v0_right.z + beta*b0.z;
 
-    V1.x = v1.x + beta*b0.x;
-    V1.y = v1.y + beta*b0.y;
-    V1.z = v1.z + beta*b0.z;
+    v1_left.x = v1_right.x + beta*b0.x;
+    v1_left.y = v1_right.y + beta*b0.y;
+    v1_left.z = v1_right.z + beta*b0.z;
 
-    V2.x = v1.x;
-    V2.y = v1.y;
-    V2.z = v1.z;
+    v2_left.x = v1_right.x;
+    v2_left.y = v1_right.y;
+    v2_left.z = v1_right.z;
 
-    V3.x = v0.x;
-    V3.y = v0.y;
-    V3.z = v0.z;
+    v3_left.x = v0_right.x;
+    v3_left.y = v0_right.y;
+    v3_left.z = v0_right.z;
 
-    V4.x = v4.x + beta*b1.x;
-    V4.y = v4.y + beta*b1.y;
-    V4.z = v4.z + beta*b1.z;
+    v4_left.x = v4_right.x + beta*b1.x;
+    v4_left.y = v4_right.y + beta*b1.y;
+    v4_left.z = v4_right.z + beta*b1.z;
 
-    V5.x = v5.x + beta*b1.x;
-    V5.y = v5.y + beta*b1.y;
-    V5.z = v5.z + beta*b1.z;
+    v5_left.x = v5_right.x + beta*b1.x;
+    v5_left.y = v5_right.y + beta*b1.y;
+    v5_left.z = v5_right.z + beta*b1.z;
 
-    V6.x = v5.x;
-    V6.y = v5.y;
-    V6.z = v5.z;
+    v6_left.x = v5_right.x;
+    v6_left.y = v5_right.y;
+    v6_left.z = v5_right.z;
 
-    V7.x = v4.x;
-    V7.y = v4.y;
-    V7.z = v4.z;
+    v7_left.x = v4_right.x;
+    v7_left.y = v4_right.y;
+    v7_left.z = v4_right.z;
 
     //right
-    addTriangle(V6, 0, 1, V2, 0, 0, V1, 1, 0);
-    addTriangle(V6, 0, 1, V5, 1, 1, V1, 1, 0);
+    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v1_left, 1, 0);
+    addTriangle(v6_left, 0, 1, v5_left, 1, 1, v1_left, 1, 0);
     //top
-    addTriangle(V5, 0, 1, V1, 0, 0, V0, 1, 0);
-    addTriangle(V5, 0, 1, V4, 1, 1, V0, 1, 0);
+    addTriangle(v5_left, 0, 1, v1_left, 0, 0, v0_left, 1, 0);
+    addTriangle(v5_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
     //left
-    addTriangle(V7, 0, 1, V3, 0, 0, V0, 1, 0);
-    addTriangle(V7, 0, 1, V4, 1, 1, V0, 1, 0);
+    addTriangle(v7_left, 0, 1, v3_left, 0, 0, v0_left, 1, 0);
+    addTriangle(v7_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
     //bottom
-    addTriangle(V6, 0, 1, V2, 0, 0, V3, 1, 0);
-    addTriangle(V6, 0, 1, V7, 1, 1, V3, 1, 0);
+    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v3_left, 1, 0);
+    addTriangle(v6_left, 0, 1, v7_left, 1, 1, v3_left, 1, 0);
 
     //coordinates of the cross bars
-    cb0 = v0;
-    cb3 = v3;
+    cb0 = v0_right;
+    cb3 = v3_right;
 
-    cb1.x = v0.x + 0.01*tangentCoord[i].x;
-    cb1.y = v0.y + 0.01*tangentCoord[i].y;
-    cb1.z = v0.z + 0.01*tangentCoord[i].z;
+    cb1.x = v0_right.x + 0.01*tangentCoord[i].x;
+    cb1.y = v0_right.y + 0.01*tangentCoord[i].y;
+    cb1.z = v0_right.z + 0.01*tangentCoord[i].z;
 
-    cb2.x = v3.x + 0.01*tangentCoord[i].x;
-    cb2.y = v3.y + 0.01*tangentCoord[i].y;
-    cb2.z = v3.z + 0.01*tangentCoord[i].z;
+    cb2.x = v3_right.x + 0.01*tangentCoord[i].x;
+    cb2.y = v3_right.y + 0.01*tangentCoord[i].y;
+    cb2.z = v3_right.z + 0.01*tangentCoord[i].z;
 
     crossbarPos.push_back(cb2.x);
     crossbarPos.push_back(cb2.y);
@@ -690,15 +689,7 @@ void initSplineCoordinates()
     crossbarUVs.push_back(0);
 
     b0 = b1;
-
   }
-}
-
-void initBuffer()
-{
-  initGround();
-  initSky();
-  initSplineCoordinates();
 }
 
 void initVBO(GLuint& vbo, vector<float>& pos, vector<float>& uvs) {
@@ -929,7 +920,9 @@ void initScene(int argc, char *argv[])
   basicPipelineProgram = new BasicPipelineProgram();
   basicPipelineProgram->Init("../openGLHelper-starterCode");
   matrix = new OpenGLMatrix();
-  initBuffer();
+  initGround();
+  initSky();
+  initSplineCoordinates();
 
   initVBO(trackBuffer, trackPos, trackUVs);
   initVBO(groundBuffer, groundPos, groundUVs);
@@ -945,11 +938,10 @@ void initScene(int argc, char *argv[])
   tangent.y = tangentCoord[0].y;
   tangent.z = tangentCoord[0].z;
 
-  computeCrossProduct(tangent,v,normal);
+  computeCrossProduct(tangent, v, normal);
   normalize(normal);
-  computeCrossProduct(tangent,normal,binormal);
+  computeCrossProduct(tangent, normal, binormal);
   normalize(binormal);
-
 }
 
 void idleFunc()

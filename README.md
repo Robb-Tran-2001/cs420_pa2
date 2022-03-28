@@ -6,7 +6,7 @@ In this assignment, we use Catmull-Rom splines along with OpenGL texture mapping
 Core Features:
 ======================
 
-1. Uses OpenGL core profile, version 3.2 
+1. Uses OpenGL core profile, version 4.1 
 
 2. Completed all Levels
 
