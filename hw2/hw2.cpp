@@ -84,7 +84,7 @@ float focus[3] = {0, 0, -1};
 float up[3] = {0, 1, 0};
 
 float u = 0;
-float step = 0.001;
+float step = 0.001, maxLineLength = 0.002;
 int uindex = 0;
 int controlPoint = 0;
 int splineNum = 0;
@@ -424,6 +424,49 @@ void initGround()
   groundUVs.push_back(0);
 }
 
+void getCoordAndTangent(Point& coord, Point& tangent, float& u, double basis_func_spline[4], double basis_func_tangent[4], float C[4][3]) {
+  for (int l=0; l<4;l++)
+  {
+    basis_func_spline[l] = (pow(u,3) * M[0][l]) + (pow(u,2) * M[1][l]) + (pow(u,1) * M[2][l]) + (M[3][l]);
+    basis_func_tangent[l] = (3 * pow(u,2) * M[0][l]) + (2 * u * M[1][l]) + M[2][l]; //derivative of p(u)
+  }
+
+  coord.x = 0.0;
+  coord.y = 0.0;
+  coord.z = 0.0;
+
+  tangent.x = 0.0;
+  tangent.y = 0.0;
+  tangent.z = 0.0;
+
+  for (int m=0;m<4;m++)
+  {
+    coord.x += basis_func_spline[m]*C[m][0];
+    coord.y += basis_func_spline[m]*C[m][1];
+    coord.z += basis_func_spline[m]*C[m][2];
+
+    tangent.x += basis_func_tangent[m]*C[m][0];
+    tangent.y += basis_func_tangent[m]*C[m][1];
+    tangent.z += basis_func_tangent[m]*C[m][2];
+  }
+}
+
+void recursiveSubdivision(float u0, float u1, float maxLineLength, double basis_func_spline[4], double basis_func_tangent[4], float C[4][3]) {
+  Point coord1, coord2, tangent1, tangent2;
+  float umid = (u0 + u1) / 2.0f;
+  getCoordAndTangent(coord1, tangent1, u0, basis_func_spline, basis_func_tangent, C);
+  getCoordAndTangent(coord2, tangent2, u1, basis_func_spline, basis_func_tangent, C);
+  double mag = sqrt(pow(coord1.x - coord2.x, 2) + pow(coord1.y - coord2.y, 2) + pow(coord1.z - coord2.z, 2) );
+  if (mag > maxLineLength) {
+    recursiveSubdivision(u0, umid, maxLineLength, basis_func_spline, basis_func_tangent, C);
+    recursiveSubdivision(umid, u1, maxLineLength, basis_func_spline, basis_func_tangent, C);
+  } else {
+    splineCoord.push_back(coord1);
+    normalize(tangent1);
+    tangentCoord.push_back(tangent1);
+  }
+}
+
 // initializes the buffer with coordinates for the spline, tracks and crossbars
 void initSplineCoordinates()
 {
@@ -431,7 +474,6 @@ void initSplineCoordinates()
   double basis_func_spline[4];
   double basis_func_tangent[4];
   Point coord, tangent;
-  Point prevCoord, prevTangent;
   float C[4][3];
 
   //calculate the point on the spline and the tangent
@@ -445,38 +487,7 @@ void initSplineCoordinates()
         C[k][1] = splines[j].points[i+k].y;
         C[k][2] = splines[j].points[i+k].z;
       }
-
-      for(u1=0;u1<=1;u1+=step)
-      {
-        for (int l=0; l<4;l++)
-        {
-          basis_func_spline[l] = (pow(u1,3) * M[0][l]) + (pow(u1,2) * M[1][l]) + (pow(u1,1) * M[2][l]) + (M[3][l]);
-          basis_func_tangent[l] = (3 * pow(u1,2) * M[0][l]) + (2 * u1 * M[1][l]) + M[2][l]; //derivative of p(u)
-        }
-
-        coord.x = 0.0;
-        coord.y = 0.0;
-        coord.z = 0.0;
-
-        tangent.x = 0.0;
-        tangent.y = 0.0;
-        tangent.z = 0.0;
-
-        for (int m=0;m<4;m++)
-        {
-          coord.x += basis_func_spline[m]*C[m][0];
-          coord.y += basis_func_spline[m]*C[m][1];
-          coord.z += basis_func_spline[m]*C[m][2];
-
-          tangent.x += basis_func_tangent[m]*C[m][0];
-          tangent.y += basis_func_tangent[m]*C[m][1];
-          tangent.z += basis_func_tangent[m]*C[m][2];
-        }
-
-        splineCoord.push_back(coord);
-        normalize(tangent);
-        tangentCoord.push_back(tangent);
-      }
+      recursiveSubdivision(0.0f, 1.0f, maxLineLength, basis_func_spline, basis_func_tangent, C);
     }
   }
 
@@ -770,7 +781,7 @@ void display()
   float p[16];
   matrix->GetMatrix(p);
   pipelineProgram->Bind();
-  glUniformMatrix4fv(h_projectionMatrix, 1, GL_FALSE, p);
+  pipelineProgram->SetProjectionMatrix(p);
 
   //modelview matrix
   GLint h_modelViewMatrix = glGetUniformLocation(program, "modelViewMatrix");
@@ -786,7 +797,7 @@ void display()
   float m[16];
   matrix->GetMatrix(m);
   pipelineProgram->Bind();
-  glUniformMatrix4fv(h_modelViewMatrix, 1, GL_FALSE, m);
+  pipelineProgram->SetModelViewMatrix(m);
 
   initVAO(groundVAO, groundTexHandle, groundBuffer, groundPos);
   glBindVertexArray(groundVAO);

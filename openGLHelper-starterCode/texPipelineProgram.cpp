@@ -19,18 +19,19 @@ int TexPipelineProgram::Init(const char * shaderBasePath)
 void TexPipelineProgram::SetModelViewMatrix(const float * m)
 {
   // pass "m" to the pipeline program, as the modelview matrix
-  // students need to implement this
+  glUniformMatrix4fv(h_modelViewMatrix, 1, GL_FALSE, m);
 }
 
 void TexPipelineProgram::SetProjectionMatrix(const float * m)
 {
   // pass "m" to the pipeline program, as the projection matrix
-  // students need to implement this
+  glUniformMatrix4fv(h_projectionMatrix, 1, GL_FALSE, m);
 }
 
 int TexPipelineProgram::SetShaderVariableHandles()
 {
   // set h_modelViewMatrix and h_projectionMatrix
-  // students need to implement this
+  SET_SHADER_VARIABLE_HANDLE(modelViewMatrix);
+  SET_SHADER_VARIABLE_HANDLE(projectionMatrix);
   return 0;
 }
