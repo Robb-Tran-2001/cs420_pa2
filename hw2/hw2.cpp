@@ -198,187 +198,187 @@ void setTextureUnit(GLint unit)
 void initSky()
 {
   //back face
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(0);
   skyUVs.push_back(0);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
   //front face
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(0);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(1);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
   //right face
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(0);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
   //left face
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(0);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(1);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
   //top face
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(0);
   skyUVs.push_back(0);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
-  skyPos.push_back(-100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(-128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(0);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(-100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(-128);
   skyUVs.push_back(1);
   skyUVs.push_back(1);
 
-  skyPos.push_back(100);
-  skyPos.push_back(100);
-  skyPos.push_back(100);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
+  skyPos.push_back(128);
   skyUVs.push_back(1);
   skyUVs.push_back(0);
 
@@ -387,39 +387,39 @@ void initSky()
 // initializes the buffer with coordinates for the ground texture
 void initGround()
 {
-  groundPos.push_back(-100);
-  groundPos.push_back(-100);
-  groundPos.push_back(-100);
+  groundPos.push_back(-128);
+  groundPos.push_back(-128);
+  groundPos.push_back(-128);
   groundUVs.push_back(0);
   groundUVs.push_back(1);
 
-  groundPos.push_back(100);
-  groundPos.push_back(-100);
-  groundPos.push_back(-100);
+  groundPos.push_back(128);
+  groundPos.push_back(-128);
+  groundPos.push_back(-128);
   groundUVs.push_back(1);
   groundUVs.push_back(1);
 
-  groundPos.push_back(-100);
-  groundPos.push_back(-100);
-  groundPos.push_back(100);
+  groundPos.push_back(-128);
+  groundPos.push_back(-128);
+  groundPos.push_back(128);
   groundUVs.push_back(0);
   groundUVs.push_back(0);
 
-  groundPos.push_back(100);
-  groundPos.push_back(-100);
-  groundPos.push_back(-100);
+  groundPos.push_back(128);
+  groundPos.push_back(-128);
+  groundPos.push_back(-128);
   groundUVs.push_back(1);
   groundUVs.push_back(1);
 
-  groundPos.push_back(-100);
-  groundPos.push_back(-100);
-  groundPos.push_back(100);
+  groundPos.push_back(-128);
+  groundPos.push_back(-128);
+  groundPos.push_back(128);
   groundUVs.push_back(0);
   groundUVs.push_back(0);
 
-  groundPos.push_back(100);
-  groundPos.push_back(-100);
-  groundPos.push_back(100);
+  groundPos.push_back(128);
+  groundPos.push_back(-128);
+  groundPos.push_back(128);
   groundUVs.push_back(1);
   groundUVs.push_back(0);
 }
@@ -914,16 +914,16 @@ void initScene(int argc, char *argv[])
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glEnable (GL_DEPTH_TEST);
 
-  string filename = "sky.jpg";
+  string filename = "./texture_images/sky.jpg";
   loadTexture(skyTexHandle, filename.c_str());
 
-  filename = "ground.jpg";
+  filename = "./texture_images/ground.jpg";
   loadTexture(groundTexHandle, filename.c_str());
 
-  filename = "track.jpg";
+  filename = "./texture_images/track.jpg";
   loadTexture(trackTexHandle, filename.c_str());
 
-  filename = "crossbar.jpg";
+  filename = "./texture_images/crossbar.jpg";
   loadTexture(crossbarTexHandle, filename.c_str());
 
   pipelineProgram = new TexPipelineProgram();

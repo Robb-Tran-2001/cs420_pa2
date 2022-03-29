@@ -1,8 +1,3 @@
-# CSCI420-Computer-Graphics-Roller-Coaster-Ride-Simulation
-Problem Statement: http://run.usc.edu/cs420-s18/assignments/assign2/assign2.html
-
-In this assignment, we use Catmull-Rom splines along with OpenGL texture mapping to create a roller coaster simulation.
-
 Core Features:
 ======================
 
