@@ -6,17 +6,18 @@
   Student username: bobtran
 */
 
-#include <iostream>
-#include <cstring>
 #include "openGLHeader.h"
 #include "glutHeader.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "imageIO.h"
 #include "openGLMatrix.h"
 #include "texPipelineProgram.h"
 #include "basicPipelineProgram.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <iostream>
+#include <cstring>
 #include <vector>
 
 #ifdef WIN32
@@ -162,26 +163,14 @@ void computeNormal(Point tangent, Point &normal, Point &binormal)
 // adds a triangle and its corresponding UV values to the vector variables trackPos and trackUVs - used to add track coordinates
 void addTriangle(Point a, float au, float av, Point b, float bu, float bv, Point c, float cu, float cv)
 {
-  trackPos.push_back(a.x);
-  trackPos.push_back(a.y);
-  trackPos.push_back(a.z);
+  trackPos.insert(trackPos.end(), {static_cast<float>(a.x), static_cast<float>(a.y), static_cast<float>(a.z)});
+  trackUVs.insert(trackUVs.end(), {au, av});
 
-  trackUVs.push_back(au);
-  trackUVs.push_back(av);
+  trackPos.insert(trackPos.end(), {static_cast<float>(b.x), static_cast<float>(b.y), static_cast<float>(b.z)});
+  trackUVs.insert(trackUVs.end(), {bu, bv});
 
-  trackPos.push_back(b.x);
-  trackPos.push_back(b.y);
-  trackPos.push_back(b.z);
-
-  trackUVs.push_back(bu);
-  trackUVs.push_back(bv);
-
-  trackPos.push_back(c.x);
-  trackPos.push_back(c.y);
-  trackPos.push_back(c.z);
-
-  trackUVs.push_back(cu);
-  trackUVs.push_back(cv);
+  trackPos.insert(trackPos.end(), {static_cast<float>(c.x), static_cast<float>(c.y), static_cast<float>(c.z)});
+  trackUVs.insert(trackUVs.end(), {cu, cv});
 }
 
 void setTextureUnit(GLint unit)
@@ -198,230 +187,120 @@ void setTextureUnit(GLint unit)
 void initSky()
 {
   //back face
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {-128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {0, 0});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
   //front face
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {-128, -128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 0});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, 128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {1, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, 128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
   //right face
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 0});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
   //left face
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {-128, -128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 0});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {-128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 1});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {-128, -128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
-  //top face
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {-128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {0, 0});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
+  skyPos.insert(skyPos.end(), {128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 
-  skyPos.push_back(-128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(0);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {-128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {0, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(-128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(1);
+  skyPos.insert(skyPos.end(), {128, 128, -128});
+  skyUVs.insert(skyUVs.end(), {1, 1});
 
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyPos.push_back(128);
-  skyUVs.push_back(1);
-  skyUVs.push_back(0);
-
+  skyPos.insert(skyPos.end(), {128, 128, 128});
+  skyUVs.insert(skyUVs.end(), {1, 0});
 }
 
 // initializes the buffer with coordinates for the ground texture
 void initGround()
 {
-  groundPos.push_back(-128);
-  groundPos.push_back(-128);
-  groundPos.push_back(-128);
-  groundUVs.push_back(0);
-  groundUVs.push_back(1);
+  groundPos.insert(groundPos.end(), {-128, -128, -128});
+  groundUVs.insert(groundUVs.end(), {0, 1});
 
-  groundPos.push_back(128);
-  groundPos.push_back(-128);
-  groundPos.push_back(-128);
-  groundUVs.push_back(1);
-  groundUVs.push_back(1);
+  groundPos.insert(groundPos.end(), {128, -128, -128});
+  groundUVs.insert(groundUVs.end(), {1, 1});
 
-  groundPos.push_back(-128);
-  groundPos.push_back(-128);
-  groundPos.push_back(128);
-  groundUVs.push_back(0);
-  groundUVs.push_back(0);
+  groundPos.insert(groundPos.end(), {-128, -128, 128});
+  groundUVs.insert(groundUVs.end(), {0, 0});
 
-  groundPos.push_back(128);
-  groundPos.push_back(-128);
-  groundPos.push_back(-128);
-  groundUVs.push_back(1);
-  groundUVs.push_back(1);
+  groundPos.insert(groundPos.end(), {128, -128, -128});
+  groundUVs.insert(groundUVs.end(), {1, 1});
 
-  groundPos.push_back(-128);
-  groundPos.push_back(-128);
-  groundPos.push_back(128);
-  groundUVs.push_back(0);
-  groundUVs.push_back(0);
+  groundPos.insert(groundPos.end(), {-128, -128, 128});
+  groundUVs.insert(groundUVs.end(), {0, 0});
 
-  groundPos.push_back(128);
-  groundPos.push_back(-128);
-  groundPos.push_back(128);
-  groundUVs.push_back(1);
-  groundUVs.push_back(0);
+  groundPos.insert(groundPos.end(), {128, -128, 128});
+  groundUVs.insert(groundUVs.end(), {1, 0});
 }
 
 void getCoordAndTangent(Point& coord, Point& tangent, float& u, double basis_func_spline[4], double basis_func_tangent[4], float C[4][3]) {
