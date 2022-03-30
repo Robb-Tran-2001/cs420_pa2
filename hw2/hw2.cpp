@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include <iostream>
 #include <cstring>
@@ -108,6 +109,8 @@ vector<Point> tangentCoord;
 Point tangent;
 Point normal;
 Point binormal;
+
+bool shuffleSplines = false;
 
 // write a screenshot to the specified filename
 void saveScreenshot(const char * filename)
@@ -262,6 +265,7 @@ void initSky()
   skyPos.insert(skyPos.end(), {-128, -128, -128});
   skyUVs.insert(skyUVs.end(), {1, 0});
 
+  // top face
   skyPos.insert(skyPos.end(), {-128, 128, 128});
   skyUVs.insert(skyUVs.end(), {0, 0});
 
@@ -390,7 +394,7 @@ void initSplineCoordinates()
   Point v0_left, v1_left, v2_left, v3_left, v4_left, v5_left, v6_left, v7_left;
   Point cb0, cb1, cb2, cb3;
 
-  for (int i=1; i<splineCoord.size(); i+=15)
+  for (int i=1; i<splineCoord.size(); i+=10)
   {
     if (i!=0)
     {
@@ -414,23 +418,23 @@ void initSplineCoordinates()
     v3_right.z = splineCoord[i].z + alpha * ((-n0.z) - (b0.z));
 
     b1 = b0;
-    computeNormal(tangentCoord[i+15], n1, b1);
+    computeNormal(tangentCoord[i+10], n1, b1);
 
-    v4_right.x = splineCoord[i+15].x + alpha * ((-n1.x) + (b1.x));
-    v4_right.y = splineCoord[i+15].y + alpha * ((-n1.y) + (b1.y));
-    v4_right.z = splineCoord[i+15].z + alpha * ((-n1.z) + (b1.z));
+    v4_right.x = splineCoord[i+10].x + alpha * ((-n1.x) + (b1.x));
+    v4_right.y = splineCoord[i+10].y + alpha * ((-n1.y) + (b1.y));
+    v4_right.z = splineCoord[i+10].z + alpha * ((-n1.z) + (b1.z));
 
-    v5_right.x = splineCoord[i+15].x + alpha * ((n1.x) + (b1.x));
-    v5_right.y = splineCoord[i+15].y + alpha * ((n1.y) + (b1.y));
-    v5_right.z = splineCoord[i+15].z + alpha * ((n1.z) + (b1.z));
+    v5_right.x = splineCoord[i+10].x + alpha * ((n1.x) + (b1.x));
+    v5_right.y = splineCoord[i+10].y + alpha * ((n1.y) + (b1.y));
+    v5_right.z = splineCoord[i+10].z + alpha * ((n1.z) + (b1.z));
 
-    v6_right.x = splineCoord[i+15].x + alpha * ((n1.x) - (b1.x));
-    v6_right.y = splineCoord[i+15].y + alpha * ((n1.y) - (b1.y));
-    v6_right.z = splineCoord[i+15].z + alpha * ((n1.z) -  (b1.z));
+    v6_right.x = splineCoord[i+10].x + alpha * ((n1.x) - (b1.x));
+    v6_right.y = splineCoord[i+10].y + alpha * ((n1.y) - (b1.y));
+    v6_right.z = splineCoord[i+10].z + alpha * ((n1.z) -  (b1.z));
 
-    v7_right.x = splineCoord[i+15].x + alpha * ((-n1.x) - (b1.x));
-    v7_right.y = splineCoord[i+15].y + alpha * ((-n1.y) - (b1.y));
-    v7_right.z = splineCoord[i+15].z + alpha * ((-n1.z) - (b1.z));
+    v7_right.x = splineCoord[i+10].x + alpha * ((-n1.x) - (b1.x));
+    v7_right.y = splineCoord[i+10].y + alpha * ((-n1.y) - (b1.y));
+    v7_right.z = splineCoord[i+10].z + alpha * ((-n1.z) - (b1.z));
 
     //left rail
     v0_left.x = v3_right.x;
@@ -664,14 +668,14 @@ void display()
   glDrawArrays(GL_TRIANGLES, 0, skyPos.size()/3);
   glBindVertexArray(0);
 
-  initVAO(trackVAO, trackTexHandle, trackBuffer, trackPos);
-  glBindVertexArray(trackVAO);
-  glDrawArrays(GL_TRIANGLES, 0, trackPos.size()/3);
-  glBindVertexArray(0);
-
   initVAO(crossbarVAO, crossbarTexHandle, crossbarBuffer, crossbarPos);
   glBindVertexArray(crossbarVAO);
   glDrawArrays(GL_TRIANGLES, 0, crossbarPos.size()/3);
+  glBindVertexArray(0);
+
+  initVAO(trackVAO, trackTexHandle, trackBuffer, trackPos);
+  glBindVertexArray(trackVAO);
+  glDrawArrays(GL_TRIANGLES, 0, trackPos.size()/3);
   glBindVertexArray(0);
 
   glutSwapBuffers();
@@ -850,7 +854,7 @@ int loadSplines(char * argv)
   char * cName = (char *) malloc(128 * sizeof(char));
   FILE * fileList;
   FILE * fileSpline;
-  int iType, i = 0, j, iLength;
+  int type, i = 0, j, length;
 
   // load the track file
   fileList = fopen(argv, "r");
@@ -879,11 +883,11 @@ int loadSplines(char * argv)
     }
 
     // gets length for spline file
-    fscanf(fileSpline, "%d %d", &iLength, &iType);
+    fscanf(fileSpline, "%d %d", &length, &type);
 
     // allocate memory for all the points
-    splines[j].points = (Point *)malloc(iLength * sizeof(Point));
-    splines[j].numControlPoints = iLength;
+    splines[j].points = (Point *)malloc(length * sizeof(Point));
+    splines[j].numControlPoints = length;
 
     // saves the data to the struct
     while (fscanf(fileSpline, "%lf %lf %lf",
@@ -896,6 +900,23 @@ int loadSplines(char * argv)
   }
 
   free(cName);
+
+  // Fisher-Yates shuffle spline order
+  if (shuffleSplines) {
+    srand(time(NULL));
+    for (int j = numSplines - 1; j > 0; j--) {
+      int k = rand() % (j + 1);
+      // create temp
+      int tempNumControlPoints = splines[j].numControlPoints;
+      Point* tempControlPoints = splines[j].points;
+      // set j = k
+      splines[j].numControlPoints = splines[k].numControlPoints;
+      splines[j].points = splines[k].points;
+      // set k = temp
+      splines[k].numControlPoints = tempNumControlPoints;
+      splines[k].points = tempControlPoints;
+    }
+  }
 
   return 0;
 }
@@ -1067,6 +1088,8 @@ int main(int argc, char *argv[])
   {
     printf ("usage: %s <trackfile>\n", argv[0]);
     exit(0);
+  } else if (argc == 3) {
+    shuffleSplines = true;
   }
 
   // load the splines from the provided filename
