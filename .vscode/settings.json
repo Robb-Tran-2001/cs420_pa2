@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "bitset": "cpp",
+        "cstdio": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "deque": "cpp",
+        "streambuf": "cpp",
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "memory": "cpp",
+        "vector": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp"
+    }
+}
