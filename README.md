@@ -77,6 +77,7 @@ Names of the .cpp files you made changes to:
 3.
 
 Comments : (If any)
+Developed on MacOS
 Note that when ./hw2 alltracks.txt is used, some splines overlap.
 Some nice tracks: ./hw2 track.txt or ./hw2 track2.txt
 Modified Makefile to compile with c++11. Run make to compile, make clean to clean.
