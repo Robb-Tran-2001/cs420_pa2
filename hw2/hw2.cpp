@@ -536,47 +536,23 @@ void initSplineCoordinates()
     cb2.y = v3_right.y + 0.01*tangentCoord[i].y;
     cb2.z = v3_right.z + 0.01*tangentCoord[i].z;
 
-    crossbarPos.push_back(cb2.x);
-    crossbarPos.push_back(cb2.y);
-    crossbarPos.push_back(cb2.z);
+    crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb2.x), static_cast<float>(cb2.y), static_cast<float>(cb2.z)});
+    crossbarUVs.insert(crossbarUVs.end(), {0, 1});
 
-    crossbarUVs.push_back(0);
-    crossbarUVs.push_back(1);
+    crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb1.x), static_cast<float>(cb1.y), static_cast<float>(cb1.z)});
+    crossbarUVs.insert(crossbarUVs.end(), {1, 1});
 
-    crossbarPos.push_back(cb1.x);
-    crossbarPos.push_back(cb1.y);
-    crossbarPos.push_back(cb1.z);
+    crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb0.x), static_cast<float>(cb0.y), static_cast<float>(cb0.z)});
+    crossbarUVs.insert(crossbarUVs.end(), {1, 0});
 
-    crossbarUVs.push_back(1);
-    crossbarUVs.push_back(1);
+    crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb2.x), static_cast<float>(cb2.y), static_cast<float>(cb2.z)});
+    crossbarUVs.insert(crossbarUVs.end(), {0, 1});
 
-    crossbarPos.push_back(cb0.x);
-    crossbarPos.push_back(cb0.y);
-    crossbarPos.push_back(cb0.z);
+    crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb3.x), static_cast<float>(cb3.y), static_cast<float>(cb3.z)});
+    crossbarUVs.insert(crossbarUVs.end(), {0, 0});
 
-    crossbarUVs.push_back(1);
-    crossbarUVs.push_back(0);
-
-    crossbarPos.push_back(cb2.x);
-    crossbarPos.push_back(cb2.y);
-    crossbarPos.push_back(cb2.z);
-
-    crossbarUVs.push_back(0);
-    crossbarUVs.push_back(1);
-
-    crossbarPos.push_back(cb3.x);
-    crossbarPos.push_back(cb3.y);
-    crossbarPos.push_back(cb3.z);
-
-    crossbarUVs.push_back(0);
-    crossbarUVs.push_back(0);
-
-    crossbarPos.push_back(cb0.x);
-    crossbarPos.push_back(cb0.y);
-    crossbarPos.push_back(cb0.z);
-
-    crossbarUVs.push_back(1);
-    crossbarUVs.push_back(0);
+    crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb0.x), static_cast<float>(cb0.y), static_cast<float>(cb0.z)});
+    crossbarUVs.insert(crossbarUVs.end(), {1, 0});
 
     b0 = b1;
   }
