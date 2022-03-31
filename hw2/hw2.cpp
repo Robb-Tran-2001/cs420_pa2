@@ -587,7 +587,7 @@ void initVBOTextPipeline(GLuint& vbo, vector<float>& pos, vector<float>& uvs) {
 void initVBOBasicPipeline(GLuint& vbo, vector<float>& pos, vector<float>& uvs, vector<float>& normals) {
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, (pos.size() + normals.size() + uvs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, (pos.size() + normals.size() /*+ uvs.size()*/) * sizeof(float), NULL, GL_STATIC_DRAW);
   // upload position data
   glBufferSubData(GL_ARRAY_BUFFER, 0, pos.size() * sizeof(float), pos.data());
   // upload normals data

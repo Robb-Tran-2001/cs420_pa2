@@ -2,7 +2,9 @@
 
 in vec3 position;
 in vec3 normal;
+in vec2 texCoord;
 
+out vec2 tc;
 out vec3 viewPosition;
 out vec3 viewNormal;
 
@@ -16,5 +18,6 @@ void main()
   viewPosition = viewPosition4.xyz;
   gl_Position = projectionMatrix * viewPosition4;
   viewNormal = normalize((normalMatrix*vec4(normal, 0.0f)).xyz);
+  tc = texCoord;
 }
 

@@ -41,7 +41,7 @@ Extra Credit Features: (Answer these Questions with Y/N; you can also insert com
 
 5. Render a sky-box - Y
 
-6. Create tracks that mimic real world roller coaster - Y
+6. Create tracks that mimic real world roller coaster - N
 
 7. Generate track from several sequences of splines - Y
 
@@ -57,8 +57,8 @@ Extra Credit Features: (Answer these Questions with Y/N; you can also insert com
 
 Additional Features: (Please document any additional features you may have implemented other than the ones described above)
 1. Add option to shuffle the splines to randomly generate track if only 3 arguments provided
-usage: ./hw2 alltracks.txt [anything]
-2.
+usage: ./hw2 alltracks.txt [anything_here]
+2. 
 3.
 
 Open-Ended Problems: (Please document approaches to any open-ended problems that you have tackled)
@@ -67,7 +67,7 @@ Open-Ended Problems: (Please document approaches to any open-ended problems that
 3.
 
 Keyboard/Mouse controls: (Please document Keyboard/Mouse controls if any)
-1. 
+1. Rotate x, y via the left mouse button. Rotate z via middle mouse button.
 2. 
 3.
 

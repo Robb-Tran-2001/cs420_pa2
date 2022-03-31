@@ -13,6 +13,7 @@ uniform vec4 ka;
 uniform vec4 kd;
 uniform vec4 ks;
 uniform float alpha;
+uniform sampler2D textureImage;
 
 void main()
 {
@@ -21,4 +22,5 @@ void main()
   float d = max(dot(viewLightDirection, viewNormal), 0.0f);
   float s = max(dot(reflectDir, eyedir), 0.0f);
   c = ka * La + d * kd * Ld + pow(s, alpha) * ks * Ls;
+  //  c = texture(textureImage, tc);
 }
