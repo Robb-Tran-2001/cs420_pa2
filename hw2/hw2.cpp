@@ -71,7 +71,7 @@ int windowHeight = 720;
 char windowTitle[512] = "CSCI 420 homework II";
 
 OpenGLMatrix * matrix;
-TexPipelineProgram * pipelineProgram;
+TexPipelineProgram * texPipelineProgram;
 BasicPipelineProgram * basicPipelineProgram;
 GLuint trackBuffer, skyBuffer, groundBuffer, crossbarBuffer;
 GLuint trackVAO, skyVAO, groundVAO, crossbarVAO;
@@ -79,6 +79,7 @@ GLuint trackVAO, skyVAO, groundVAO, crossbarVAO;
 GLuint skyTexHandle, groundTexHandle, trackTexHandle, crossbarTexHandle;
 vector<float> skyPos, groundPos, crossbarPos, trackPos;
 vector<float> skyUVs, groundUVs, crossbarUVs, trackUVs;
+vector<float> trackNormals;
 
 float FOV = 90.0;
 float eye[3] = {0, 0, 0};
@@ -163,22 +164,33 @@ void computeNormal(Point tangent, Point &normal, Point &binormal)
   normalize(binormal);
 }
 
+Point reversePoint(Point a) {
+  Point b;
+  b.x = -1.0f * a.x;
+  b.y = -1.0f * a.y;
+  b.z = -1.0f * a.z;
+  return b;
+}
+
 // adds a triangle and its corresponding UV values to the vector variables trackPos and trackUVs - used to add track coordinates
-void addTriangle(Point a, float au, float av, Point b, float bu, float bv, Point c, float cu, float cv)
+void addTriangle(Point a, float au, float av, Point aNormal, Point b, float bu, float bv, Point bNormal, Point c, float cu, float cv, Point cNormal)
 {
   trackPos.insert(trackPos.end(), {static_cast<float>(a.x), static_cast<float>(a.y), static_cast<float>(a.z)});
   trackUVs.insert(trackUVs.end(), {au, av});
+  trackNormals.insert(trackNormals.end(), {static_cast<float>(aNormal.x), static_cast<float>(aNormal.y), static_cast<float>(aNormal.z)});
 
   trackPos.insert(trackPos.end(), {static_cast<float>(b.x), static_cast<float>(b.y), static_cast<float>(b.z)});
   trackUVs.insert(trackUVs.end(), {bu, bv});
+  trackNormals.insert(trackNormals.end(), {static_cast<float>(bNormal.x), static_cast<float>(bNormal.y), static_cast<float>(bNormal.z)});
 
   trackPos.insert(trackPos.end(), {static_cast<float>(c.x), static_cast<float>(c.y), static_cast<float>(c.z)});
   trackUVs.insert(trackUVs.end(), {cu, cv});
+  trackNormals.insert(trackNormals.end(), {static_cast<float>(cNormal.x), static_cast<float>(cNormal.y), static_cast<float>(cNormal.z)});
 }
 
 void setTextureUnit(GLint unit)
 {
-  GLuint program = pipelineProgram->GetProgramHandle();
+  GLuint program = texPipelineProgram->GetProgramHandle();
   glActiveTexture(unit); // select the active texture unit
   // get a handle to the “textureImage” shader variable
   GLint h_textureImage = glGetUniformLocation(program, "textureImage");
@@ -375,7 +387,7 @@ void initSplineCoordinates()
   }
 
   //calculate the coordinates for the rails
-  Point v0_right, v1_right, v2_right, v3_right, v4_right, v5_right, v6_right, v7_right, v_initial;
+  Point v0, v1, v2, v3, v4, v5, v6, v7, v_initial;
   Point n0, n1, b0, b1;
   float alpha = 0.008; //ratio of the normal and binormal
   float beta = 0.01;
@@ -391,7 +403,7 @@ void initSplineCoordinates()
   computeCrossProduct(tangentCoord[0], n0, b0);
   normalize(b0);
 
-  Point v0_left, v1_left, v2_left, v3_left, v4_left, v5_left, v6_left, v7_left;
+  Point V0, V1, V2, V3, V4, V5, V6, V7;
   Point cb0, cb1, cb2, cb3;
 
   for (int i=1; i<splineCoord.size(); i+=10)
@@ -401,144 +413,144 @@ void initSplineCoordinates()
       computeNormal(tangentCoord[i], n0, b0);
     }
 
-    v0_right.x = splineCoord[i].x + alpha * ((-n0.x) + (b0.x));
-    v0_right.y = splineCoord[i].y + alpha * ((-n0.y) + (b0.y));
-    v0_right.z = splineCoord[i].z + alpha * ((-n0.z) + (b0.z));
+    v0.x = splineCoord[i].x + alpha * ((-n0.x) + (b0.x));
+    v0.y = splineCoord[i].y + alpha * ((-n0.y) + (b0.y));
+    v0.z = splineCoord[i].z + alpha * ((-n0.z) + (b0.z));
 
-    v1_right.x = splineCoord[i].x + alpha * ((n0.x) + (b0.x));
-    v1_right.y = splineCoord[i].y + alpha * ((n0.y) + (b0.y));
-    v1_right.z = splineCoord[i].z + alpha * ((n0.z) + (b0.z));
+    v1.x = splineCoord[i].x + alpha * ((n0.x) + (b0.x));
+    v1.y = splineCoord[i].y + alpha * ((n0.y) + (b0.y));
+    v1.z = splineCoord[i].z + alpha * ((n0.z) + (b0.z));
 
-    v2_right.x = splineCoord[i].x + alpha * ((n0.x) - (b0.x));
-    v2_right.y = splineCoord[i].y + alpha * ((n0.y) - (b0.y));
-    v2_right.z = splineCoord[i].z + alpha * ((n0.z) - (b0.z));
+    v2.x = splineCoord[i].x + alpha * ((n0.x) - (b0.x));
+    v2.y = splineCoord[i].y + alpha * ((n0.y) - (b0.y));
+    v2.z = splineCoord[i].z + alpha * ((n0.z) - (b0.z));
 
-    v3_right.x = splineCoord[i].x + alpha * ((-n0.x) - (b0.x));
-    v3_right.y = splineCoord[i].y + alpha * ((-n0.y) - (b0.y));
-    v3_right.z = splineCoord[i].z + alpha * ((-n0.z) - (b0.z));
+    v3.x = splineCoord[i].x + alpha * ((-n0.x) - (b0.x));
+    v3.y = splineCoord[i].y + alpha * ((-n0.y) - (b0.y));
+    v3.z = splineCoord[i].z + alpha * ((-n0.z) - (b0.z));
 
     b1 = b0;
     computeNormal(tangentCoord[i+10], n1, b1);
 
-    v4_right.x = splineCoord[i+10].x + alpha * ((-n1.x) + (b1.x));
-    v4_right.y = splineCoord[i+10].y + alpha * ((-n1.y) + (b1.y));
-    v4_right.z = splineCoord[i+10].z + alpha * ((-n1.z) + (b1.z));
+    v4.x = splineCoord[i+10].x + alpha * ((-n1.x) + (b1.x));
+    v4.y = splineCoord[i+10].y + alpha * ((-n1.y) + (b1.y));
+    v4.z = splineCoord[i+10].z + alpha * ((-n1.z) + (b1.z));
 
-    v5_right.x = splineCoord[i+10].x + alpha * ((n1.x) + (b1.x));
-    v5_right.y = splineCoord[i+10].y + alpha * ((n1.y) + (b1.y));
-    v5_right.z = splineCoord[i+10].z + alpha * ((n1.z) + (b1.z));
+    v5.x = splineCoord[i+10].x + alpha * ((n1.x) + (b1.x));
+    v5.y = splineCoord[i+10].y + alpha * ((n1.y) + (b1.y));
+    v5.z = splineCoord[i+10].z + alpha * ((n1.z) + (b1.z));
 
-    v6_right.x = splineCoord[i+10].x + alpha * ((n1.x) - (b1.x));
-    v6_right.y = splineCoord[i+10].y + alpha * ((n1.y) - (b1.y));
-    v6_right.z = splineCoord[i+10].z + alpha * ((n1.z) -  (b1.z));
+    v6.x = splineCoord[i+10].x + alpha * ((n1.x) - (b1.x));
+    v6.y = splineCoord[i+10].y + alpha * ((n1.y) - (b1.y));
+    v6.z = splineCoord[i+10].z + alpha * ((n1.z) -  (b1.z));
 
-    v7_right.x = splineCoord[i+10].x + alpha * ((-n1.x) - (b1.x));
-    v7_right.y = splineCoord[i+10].y + alpha * ((-n1.y) - (b1.y));
-    v7_right.z = splineCoord[i+10].z + alpha * ((-n1.z) - (b1.z));
+    v7.x = splineCoord[i+10].x + alpha * ((-n1.x) - (b1.x));
+    v7.y = splineCoord[i+10].y + alpha * ((-n1.y) - (b1.y));
+    v7.z = splineCoord[i+10].z + alpha * ((-n1.z) - (b1.z));
 
     //left rail
-    v0_left.x = v3_right.x;
-    v0_left.y = v3_right.y;
-    v0_left.z = v3_right.z;
+    V0.x = v3.x;
+    V0.y = v3.y;
+    V0.z = v3.z;
 
-    v1_left.x = v2_right.x;
-    v1_left.y = v2_right.y;
-    v1_left.z = v2_right.z;
+    V1.x = v2.x;
+    V1.y = v2.y;
+    V1.z = v2.z;
 
-    v2_left.x = v2_right.x - beta*b0.x;
-    v2_left.y = v2_right.y - beta*b0.y;
-    v2_left.z = v2_right.z - beta*b0.z;
+    V2.x = v2.x - beta*b0.x;
+    V2.y = v2.y - beta*b0.y;
+    V2.z = v2.z - beta*b0.z;
 
-    v3_left.x = v3_right.x - beta*b0.x;
-    v3_left.y = v3_right.y - beta*b0.y;
-    v3_left.z = v3_right.z - beta*b0.z;
+    V3.x = v3.x - beta*b0.x;
+    V3.y = v3.y - beta*b0.y;
+    V3.z = v3.z - beta*b0.z;
 
-    v4_left.x = v7_right.x;
-    v4_left.y = v7_right.y;
-    v4_left.z = v7_right.z;
+    V4.x = v7.x;
+    V4.y = v7.y;
+    V4.z = v7.z;
 
-    v5_left.x = v6_right.x;
-    v5_left.y = v6_right.y;
-    v5_left.z = v6_right.z;
+    V5.x = v6.x;
+    V5.y = v6.y;
+    V5.z = v6.z;
 
-    v6_left.x = v6_right.x - beta*b1.x;
-    v6_left.y = v6_right.y - beta*b1.y;
-    v6_left.z = v6_right.z - beta*b1.z;
+    V6.x = v6.x - beta*b1.x;
+    V6.y = v6.y - beta*b1.y;
+    V6.z = v6.z - beta*b1.z;
 
-    v7_left.x = v7_right.x - beta*b1.x;
-    v7_left.y = v7_right.y - beta*b1.y;
-    v7_left.z = v7_right.z - beta*b1.z;
+    V7.x = v7.x - beta*b1.x;
+    V7.y = v7.y - beta*b1.y;
+    V7.z = v7.z - beta*b1.z;
 
-    //right
-    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v1_left, 1, 0);
-    addTriangle(v6_left, 0, 1, v5_left, 1, 1, v1_left, 1, 0);
     //top
-    addTriangle(v5_left, 0, 1, v1_left, 0, 0, v0_left, 1, 0);
-    addTriangle(v5_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
-    //left
-    addTriangle(v7_left, 0, 1, v3_left, 0, 0, v0_left, 1, 0);
-    addTriangle(v7_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
+    addTriangle(V6, 0, 1, n1, V2, 0, 0, n0, V1, 1, 0, n0);
+    addTriangle(V6, 0, 1, n1, V5, 1, 1, n1, V1, 1, 0, n0);
+    //right
+    addTriangle(V5, 0, 1, b1, V1, 0, 0, b0, V0, 1, 0, b0);
+    addTriangle(V5, 0, 1, b1, V4, 1, 1, b1, V0, 1, 0, b0);
     //bottom
-    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v3_left, 1, 0);
-    addTriangle(v6_left, 0, 1, v7_left, 1, 1, v3_left, 1, 0);
+    addTriangle(V7, 0, 1, reversePoint(n1), V3, 0, 0, reversePoint(n0), V0, 1, 0, reversePoint(n0));
+    addTriangle(V7, 0, 1, reversePoint(n1), V4, 1, 1, reversePoint(n1), V0, 1, 0, reversePoint(n0));
+    //left
+    addTriangle(V6, 0, 1, reversePoint(b1), V2, 0, 0, reversePoint(b0), V3, 1, 0, reversePoint(b0));
+    addTriangle(V6, 0, 1, reversePoint(b1), V7, 1, 1, reversePoint(b1), V3, 1, 0, reversePoint(b0));
 
     //right rail
-    v0_left.x = v0_right.x + beta*b0.x;
-    v0_left.y = v0_right.y + beta*b0.y;
-    v0_left.z = v0_right.z + beta*b0.z;
+    V0.x = v0.x + beta*b0.x;
+    V0.y = v0.y + beta*b0.y;
+    V0.z = v0.z + beta*b0.z;
 
-    v1_left.x = v1_right.x + beta*b0.x;
-    v1_left.y = v1_right.y + beta*b0.y;
-    v1_left.z = v1_right.z + beta*b0.z;
+    V1.x = v1.x + beta*b0.x;
+    V1.y = v1.y + beta*b0.y;
+    V1.z = v1.z + beta*b0.z;
 
-    v2_left.x = v1_right.x;
-    v2_left.y = v1_right.y;
-    v2_left.z = v1_right.z;
+    V2.x = v1.x;
+    V2.y = v1.y;
+    V2.z = v1.z;
 
-    v3_left.x = v0_right.x;
-    v3_left.y = v0_right.y;
-    v3_left.z = v0_right.z;
+    V3.x = v0.x;
+    V3.y = v0.y;
+    V3.z = v0.z;
 
-    v4_left.x = v4_right.x + beta*b1.x;
-    v4_left.y = v4_right.y + beta*b1.y;
-    v4_left.z = v4_right.z + beta*b1.z;
+    V4.x = v4.x + beta*b1.x;
+    V4.y = v4.y + beta*b1.y;
+    V4.z = v4.z + beta*b1.z;
 
-    v5_left.x = v5_right.x + beta*b1.x;
-    v5_left.y = v5_right.y + beta*b1.y;
-    v5_left.z = v5_right.z + beta*b1.z;
+    V5.x = v5.x + beta*b1.x;
+    V5.y = v5.y + beta*b1.y;
+    V5.z = v5.z + beta*b1.z;
 
-    v6_left.x = v5_right.x;
-    v6_left.y = v5_right.y;
-    v6_left.z = v5_right.z;
+    V6.x = v5.x;
+    V6.y = v5.y;
+    V6.z = v5.z;
 
-    v7_left.x = v4_right.x;
-    v7_left.y = v4_right.y;
-    v7_left.z = v4_right.z;
+    V7.x = v4.x;
+    V7.y = v4.y;
+    V7.z = v4.z;
 
-    //right
-    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v1_left, 1, 0);
-    addTriangle(v6_left, 0, 1, v5_left, 1, 1, v1_left, 1, 0);
     //top
-    addTriangle(v5_left, 0, 1, v1_left, 0, 0, v0_left, 1, 0);
-    addTriangle(v5_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
-    //left
-    addTriangle(v7_left, 0, 1, v3_left, 0, 0, v0_left, 1, 0);
-    addTriangle(v7_left, 0, 1, v4_left, 1, 1, v0_left, 1, 0);
+    addTriangle(V6, 0, 1, n1, V2, 0, 0, n0, V1, 1, 0, n0);
+    addTriangle(V6, 0, 1, n1, V5, 1, 1, n1, V1, 1, 0, n0);
+    //right
+    addTriangle(V5, 0, 1, b1, V1, 0, 0, b0, V0, 1, 0, b0);
+    addTriangle(V5, 0, 1, b1, V4, 1, 1, b1, V0, 1, 0, b0);
     //bottom
-    addTriangle(v6_left, 0, 1, v2_left, 0, 0, v3_left, 1, 0);
-    addTriangle(v6_left, 0, 1, v7_left, 1, 1, v3_left, 1, 0);
+    addTriangle(V7, 0, 1, reversePoint(n1), V3, 0, 0, reversePoint(n0), V0, 1, 0, reversePoint(n0));
+    addTriangle(V7, 0, 1, reversePoint(n1), V4, 1, 1, reversePoint(n1), V0, 1, 0, reversePoint(n0));
+    //left
+    addTriangle(V6, 0, 1, reversePoint(b1), V2, 0, 0, reversePoint(b0), V3, 1, 0, reversePoint(b0));
+    addTriangle(V6, 0, 1, reversePoint(b1), V7, 1, 1, reversePoint(b1), V3, 1, 0, reversePoint(b0));
 
     //coordinates of the cross bars
-    cb0 = v0_right;
-    cb3 = v3_right;
+    cb0 = v0;
+    cb3 = v3;
 
-    cb1.x = v0_right.x + 0.01*tangentCoord[i].x;
-    cb1.y = v0_right.y + 0.01*tangentCoord[i].y;
-    cb1.z = v0_right.z + 0.01*tangentCoord[i].z;
+    cb1.x = v0.x + 0.01*tangentCoord[i].x;
+    cb1.y = v0.y + 0.01*tangentCoord[i].y;
+    cb1.z = v0.z + 0.01*tangentCoord[i].z;
 
-    cb2.x = v3_right.x + 0.01*tangentCoord[i].x;
-    cb2.y = v3_right.y + 0.01*tangentCoord[i].y;
-    cb2.z = v3_right.z + 0.01*tangentCoord[i].z;
+    cb2.x = v3.x + 0.01*tangentCoord[i].x;
+    cb2.y = v3.y + 0.01*tangentCoord[i].y;
+    cb2.z = v3.z + 0.01*tangentCoord[i].z;
 
     crossbarPos.insert(crossbarPos.end(), {static_cast<float>(cb2.x), static_cast<float>(cb2.y), static_cast<float>(cb2.z)});
     crossbarUVs.insert(crossbarUVs.end(), {0, 1});
@@ -562,7 +574,7 @@ void initSplineCoordinates()
   }
 }
 
-void initVBO(GLuint& vbo, vector<float>& pos, vector<float>& uvs) {
+void initVBOTextPipeline(GLuint& vbo, vector<float>& pos, vector<float>& uvs) {
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, (pos.size() + uvs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
@@ -570,6 +582,18 @@ void initVBO(GLuint& vbo, vector<float>& pos, vector<float>& uvs) {
   glBufferSubData(GL_ARRAY_BUFFER, 0, pos.size() * sizeof(float), pos.data());
   // upload uv data
   glBufferSubData(GL_ARRAY_BUFFER, pos.size() * sizeof(float), uvs.size() * sizeof(float), uvs.data());
+}
+
+void initVBOBasicPipeline(GLuint& vbo, vector<float>& pos, vector<float>& uvs, vector<float>& normals) {
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, (pos.size() + normals.size() + uvs.size()) * sizeof(float), NULL, GL_STATIC_DRAW);
+  // upload position data
+  glBufferSubData(GL_ARRAY_BUFFER, 0, pos.size() * sizeof(float), pos.data());
+  // upload normals data
+  glBufferSubData(GL_ARRAY_BUFFER, pos.size() * sizeof(float), normals.size() * sizeof(float), normals.data());
+  // upload uv data
+  // glBufferSubData(GL_ARRAY_BUFFER, (pos.size() + normals.size()) * sizeof(float), uvs.size() * sizeof(float), uvs.data());
 }
 
 // sets the camera attributes eye, focus and up
@@ -590,12 +614,12 @@ void setCameraAttributes(int i)
   up[2] = normal.z;
 }
 
-void initVAO(GLuint& vao, GLuint& texHandle, GLuint& vbo, vector<float>& pos) {
+void initVAOTextPipeline(GLuint& vao, GLuint& texHandle, GLuint& vbo, vector<float>& pos) {
   glGenVertexArrays(1, &vao);
   setTextureUnit(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texHandle);
 
-  GLuint program = pipelineProgram->GetProgramHandle();
+  GLuint program = texPipelineProgram->GetProgramHandle();
   glBindVertexArray(vao);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   GLuint loc = glGetAttribLocation(program, "position");
@@ -608,10 +632,80 @@ void initVAO(GLuint& vao, GLuint& texHandle, GLuint& vbo, vector<float>& pos) {
   glBindVertexArray(0);
 }
 
+void initVAOBasicPipeline(GLuint& vao, GLuint& texHandle, GLuint& vbo, vector<float>& pos, vector<float>& normals) {
+  glGenVertexArrays(1, &vao);
+  setTextureUnit(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, texHandle);
+
+  GLuint program = basicPipelineProgram->GetProgramHandle();
+  glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  GLuint loc = glGetAttribLocation(program, "position");
+  glEnableVertexAttribArray(loc);
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*) 0);
+
+  GLuint loc2 = glGetAttribLocation(program, "normal");
+  glEnableVertexAttribArray(loc2);
+  glVertexAttribPointer(loc2, 3, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)(pos.size()*sizeof(float)));
+  
+  // GLuint loc3 = glGetAttribLocation(program, "texCoord");
+  // glEnableVertexAttribArray(loc3);
+  // glVertexAttribPointer(loc2, 2, GL_FLOAT, GL_FALSE, 0, (const void*) (size_t)((pos.size() + normals.size())*sizeof(float)));
+  glBindVertexArray(0);
+}
+
+void setupPhongShading() {
+  GLuint program = basicPipelineProgram->GetProgramHandle();
+  float La[4] = {0.5f,0.5f,0.5f,1.0f}; 
+  float ka[4] = { 0.23125f, 0.23125f, 0.23125f, 1.0f };
+  GLint h_La = glGetUniformLocation(program, "La");
+  glUniform4fv(h_La, 1, La);
+  GLint h_ka = glGetUniformLocation(program, "ka");
+  glUniform4fv(h_ka, 1, ka);
+
+  float Ld[4] = {0.75164f, 0.75164f, 0.75164f, 1.0f }; 
+  float kd[4] = { 0.23125f, 0.23125f, 0.23125f, 1.0f };
+  GLint h_Ld = glGetUniformLocation(program, "Ld");
+  glUniform4fv(h_Ld, 1, Ld);
+  GLint h_kd = glGetUniformLocation(program, "kd");
+  glUniform4fv(h_kd, 1, kd);
+
+  float Ls[4] = {0.5f,0.5f,0.5,1.0f}; 
+  float ks[4] = {0.773911f, 0.773911f, 0.773911f, 1.0f };
+  GLint h_Ls = glGetUniformLocation(program, "Ls");
+  glUniform4fv(h_Ls, 1, Ls);
+  GLint h_ks = glGetUniformLocation(program, "ks");
+  glUniform4fv(h_ks, 1, ks);
+
+  GLint h_alpha = glGetUniformLocation(program, "alpha");
+  glUniform1f(h_alpha, 1.0f);
+
+  float view[16]; // column-major
+  matrix->SetMatrixMode(OpenGLMatrix::ModelView);
+  matrix->LoadIdentity();
+  matrix->GetMatrix(view);
+
+  glm::vec3 lightDirection = glm::vec3(0.0f, 1.0f, 0.0f); // the "Sun" at noon
+  float viewLightDirection[3]; // light direction in the view space
+
+  viewLightDirection[0] = (view[0] * lightDirection.x) + (view[4] * lightDirection.y) + (view[8] * lightDirection.z);
+  viewLightDirection[1] = (view[1] * lightDirection.x) + (view[5] * lightDirection.y) + (view[9] * lightDirection.z);
+  viewLightDirection[2] = (view[2] * lightDirection.x) + (view[6] * lightDirection.y) + (view[10] * lightDirection.z);
+  //upload viewLightDirection to the GPU
+  GLint h_viewLightDirection = glGetUniformLocation(program, "viewLightDirection");
+  glUniform3fv(h_viewLightDirection, 1, viewLightDirection);
+
+  GLint h_normalMatrix = glGetUniformLocation(program, "normalMatrix");
+  float n[16];
+  matrix->SetMatrixMode(OpenGLMatrix::ModelView);
+  matrix->GetNormalMatrix(n); // get normal matrix
+  glUniformMatrix4fv(h_normalMatrix, 1, GL_FALSE, n);
+}
+
 void display()
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  pipelineProgram->Bind();
+  texPipelineProgram->Bind();
 
   setCameraAttributes(uindex);
   uindex++;
@@ -631,7 +725,7 @@ void display()
     }
   }
 
-  GLuint program = pipelineProgram->GetProgramHandle();
+  GLuint program = basicPipelineProgram->GetProgramHandle();
   //projection matrix
   GLint h_projectionMatrix = glGetUniformLocation(program, "projectionMatrix");
   matrix->SetMatrixMode(OpenGLMatrix::Projection);
@@ -639,8 +733,8 @@ void display()
   matrix->Perspective(FOV, (1.0*windowWidth/windowHeight), 0.01, 1000.0);
   float p[16];
   matrix->GetMatrix(p);
-  pipelineProgram->Bind();
-  pipelineProgram->SetProjectionMatrix(p);
+  texPipelineProgram->Bind();
+  texPipelineProgram->SetProjectionMatrix(p);
 
   //modelview matrix
   GLint h_modelViewMatrix = glGetUniformLocation(program, "modelViewMatrix");
@@ -655,25 +749,32 @@ void display()
 
   float m[16];
   matrix->GetMatrix(m);
-  pipelineProgram->Bind();
-  pipelineProgram->SetModelViewMatrix(m);
+  texPipelineProgram->Bind();
+  texPipelineProgram->SetModelViewMatrix(m);
 
-  initVAO(groundVAO, groundTexHandle, groundBuffer, groundPos);
+  basicPipelineProgram->Bind();
+  basicPipelineProgram->SetProjectionMatrix(p);
+  basicPipelineProgram->SetModelViewMatrix(m);
+
+  texPipelineProgram->Bind();
+  initVAOTextPipeline(groundVAO, groundTexHandle, groundBuffer, groundPos);
   glBindVertexArray(groundVAO);
   glDrawArrays(GL_TRIANGLES, 0, groundPos.size()/3);
   glBindVertexArray(0);
 
-  initVAO(skyVAO, skyTexHandle, skyBuffer, skyPos);
+  initVAOTextPipeline(skyVAO, skyTexHandle, skyBuffer, skyPos);
   glBindVertexArray(skyVAO);
   glDrawArrays(GL_TRIANGLES, 0, skyPos.size()/3);
   glBindVertexArray(0);
 
-  initVAO(crossbarVAO, crossbarTexHandle, crossbarBuffer, crossbarPos);
+  initVAOTextPipeline(crossbarVAO, crossbarTexHandle, crossbarBuffer, crossbarPos);
   glBindVertexArray(crossbarVAO);
   glDrawArrays(GL_TRIANGLES, 0, crossbarPos.size()/3);
   glBindVertexArray(0);
 
-  initVAO(trackVAO, trackTexHandle, trackBuffer, trackPos);
+  basicPipelineProgram->Bind();
+  setupPhongShading();
+  initVAOBasicPipeline(trackVAO, trackTexHandle, trackBuffer, trackPos, trackNormals);
   glBindVertexArray(trackVAO);
   glDrawArrays(GL_TRIANGLES, 0, trackPos.size()/3);
   glBindVertexArray(0);
@@ -785,8 +886,8 @@ void initScene(int argc, char *argv[])
   filename = "./texture_images/crossbar.jpg";
   loadTexture(crossbarTexHandle, filename.c_str());
 
-  pipelineProgram = new TexPipelineProgram();
-  pipelineProgram->Init("../openGLHelper-starterCode");
+  texPipelineProgram = new TexPipelineProgram();
+  texPipelineProgram->Init("../openGLHelper-starterCode");
   basicPipelineProgram = new BasicPipelineProgram();
   basicPipelineProgram->Init("../openGLHelper-starterCode");
   matrix = new OpenGLMatrix();
@@ -794,10 +895,13 @@ void initScene(int argc, char *argv[])
   initSky();
   initSplineCoordinates();
 
-  initVBO(trackBuffer, trackPos, trackUVs);
-  initVBO(groundBuffer, groundPos, groundUVs);
-  initVBO(skyBuffer, skyPos, skyUVs);
-  initVBO(crossbarBuffer, crossbarPos, crossbarUVs);
+  texPipelineProgram->Bind();
+  initVBOTextPipeline(groundBuffer, groundPos, groundUVs);
+  initVBOTextPipeline(skyBuffer, skyPos, skyUVs);
+  initVBOTextPipeline(crossbarBuffer, crossbarPos, crossbarUVs);
+
+  basicPipelineProgram->Bind();
+  initVBOBasicPipeline(trackBuffer, trackPos, trackUVs, trackNormals);
 
   Point v;
   v.x = 0.0000000001;
