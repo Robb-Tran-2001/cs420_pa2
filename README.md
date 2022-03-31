@@ -57,12 +57,12 @@ Extra Credit Features: (Answer these Questions with Y/N; you can also insert com
 
 Additional Features: (Please document any additional features you may have implemented other than the ones described above)
 1. Add option to shuffle the splines to randomly generate track if only 3 arguments provided
-usage: ./hw2 alltracks.txt [anything_here]
+usage: ./hw2 [track_list_file] [anything_here] (e.g. ./hw2 alltracks.txt 123)
 2. 
 3.
 
 Open-Ended Problems: (Please document approaches to any open-ended problems that you have tackled)
-1.
+1. Adding texture to rails in addition to Phong shading
 2.
 3.
 
